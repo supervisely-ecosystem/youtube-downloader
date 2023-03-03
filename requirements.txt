@@ -1,0 +1,7 @@
+supervisely
+google-api-python-client
+moviepy
+names
+pytube
+
+ffmpeg-python
