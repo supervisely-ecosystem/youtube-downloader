@@ -6,4 +6,5 @@ secret_debug.env
 .DS_Store
 __pycache__/
 result/
+src/widgets.py
 *.mp4
