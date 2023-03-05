@@ -15,7 +15,8 @@ from dotenv import load_dotenv
 
 from supervisely.app.widgets import Card, Container
 
-from src.ui.download import button_download, input_text, button_download, buttons_container_1, note_box_license, progress_bar, button_stop_download, done_text
+from src.ui.download import button_download, input_text, button_download, buttons_container_1
+from src.ui.download import select_licenses, note_box_license, progress_bar, button_stop_download, done_text
 from src.ui.download import checkbox_title, checkbox_description, checkbox_author
 
 from src.ui.trim import button_trim, buttons_container_2, done_label_trim, input_min_seconds, input_max_seconds
@@ -73,19 +74,28 @@ trimmed_video_thumbnail.hide()
 @button_download.click
 def download_video():
 
+    global is_stopped
+    is_stopped = False
+
     progress_bar.hide()
     done_text.hide()
 
     link = input_text.get_value()
     yt_video_id = get_youtube_id(link)
 
+    os.environ['yt_video_id'] = str(yt_video_id)
+
     checkbox_dict = {
+        'duration_sec' : False,
         'author' : checkbox_author.is_checked(),
         'description' : checkbox_description.is_checked(),
         'title' : checkbox_title.is_checked(),
     }
+
+    meta_dict = get_meta(yt_video_id, select_licenses, note_box_license)
+    
     os.environ['meta_dict'] = json.dumps(
-        get_meta(yt_video_id, checkbox_dict, note_box_license)
+        {key: value for key, value in meta_dict.items() if checkbox_dict[key]}
     )
     if not note_box_license.description == None:
         note_box_license.show()
@@ -103,7 +113,6 @@ def download_video():
             filename = os.path.join(os.getcwd(), f"src/videos/{yt_video_id}.mp4")
 
             with open(filename, 'wb') as f:
-                # is_cancelled = False
                 stream = request.stream(stream.url) # get an iterable stream
                 downloaded = 0
 
@@ -133,7 +142,6 @@ def download_video():
         
     print('Video downloaded to directory:', os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4'))
 
-    os.environ['yt_video_id'] = str(yt_video_id)
 
     if is_stopped:
         button_stop_download.hide()
@@ -142,18 +150,28 @@ def download_video():
         done_text.show()
     else:
         button_stop_download.hide()
-        done_text.text = 'YouTube video was succesfully downloaded.'
+        done_text.text = f'Video "{meta_dict["title"]}" was succesfully downloaded.'
         done_text.status = 'success'
         done_text.show()
 
 
-is_stopped = False
+    input_min_seconds.min = 0
+    input_min_seconds.value = 0
+    input_max_seconds.max = meta_dict['duration_sec']
+    input_max_seconds.value = meta_dict['duration_sec']
+
+    input_min_seconds.enable()
+    input_max_seconds.enable()
+
 
 @button_stop_download.click
 def stop_download():
 
     global is_stopped
     is_stopped = True
+
+input_min_seconds.disable()
+input_max_seconds.disable()
 
 @button_trim.click
 def trim_video():
@@ -182,8 +200,6 @@ def trim_video():
     done_label_trim.show()
  
 
-# input_dataset_id.hide()
-
 @select_destination.value_changed
 def sel_dest(value):
     if value == 'new':
@@ -199,11 +215,27 @@ def upload():
     destination = select_destination.get_value()
 
     if destination == 'current':
-        
-        project_id = input_project_id.get_value()
-        dataset_id = input_dataset_id.get_value()
 
-    if destination == 'new':
+        if str(input_project_id.get_value()).isdigit() \
+            and str(input_dataset_id.get_value()).isdigit():
+
+            if api.project.get_info_by_id(
+                input_project_id.get_value()
+            ) == None:
+                raise RuntimeError(f"Project with id {input_project_id.get_value()} is either archived, doesn't exist or you don't have enough permissions to access it.")
+            
+            if api.dataset.get_info_by_id(
+                input_dataset_id.get_value()
+            ) == None:
+                raise RuntimeError(f"Dataset with id {input_dataset_id.get_value()} is either archived, doesn't exist or you don't have enough permissions to access it.")
+            
+            project_id = input_project_id.get_value()
+            dataset_id = input_dataset_id.get_value()
+
+        else:
+            raise RuntimeError(f'Entered values are not digits. Project ID: {input_project_id.get_value()}, Dataset ID:{input_dataset_id.get_value()}')
+    
+    elif destination == 'new':
 
         workspace_id = sly.env.workspace_id()
 
@@ -217,6 +249,8 @@ def upload():
 
         project_id = project.id
         dataset_id = dataset.id
+    else:
+        raise ValueError(f'Unknown error with value "{destination}"')
 
     yt_video_id = os.environ['yt_video_id']
     video_name = f"trimmed_{yt_video_id}.mp4"
@@ -236,13 +270,15 @@ def upload():
         meta=meta_dict
     )
 
-    print(f'Video "{video.name}" uploaded to Supervisely with ID:{video.id}')
-
     video_info = api.video.get_info_by_id(id=video.id)
 
     trimmed_video_thumbnail.set_video(video_info)
     trimmed_video_thumbnail.show()
 
+    print(f'Video "{video.name}" uploaded to Supervisely with ID:{video.id}')
+
+
 
 layout = Container(widgets=[card_1, card_2, card_3], direction="vertical")
 app = sly.Application(layout=layout)
+

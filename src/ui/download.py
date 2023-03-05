@@ -2,7 +2,7 @@ from supervisely.app.widgets import Button, Input, Select, Checkbox, Container
 
 from supervisely.app.widgets import Text, NotificationBox, Progress
 
-input_text = Input(placeholder="Please input a link to your video")
+input_text = Input(placeholder="Please input a link to your video in format 'https://www.youtube.com/...'")
 button_download = Button(text="Download")
 
 licenses = [
@@ -21,7 +21,8 @@ select_licenses = Select(
 
 checkbox_title = Checkbox(content="Title")
 checkbox_description = Checkbox(content="Description")
-checkbox_author = Checkbox(content="Author")
+checkbox_author = Checkbox(content="Author", checked=True)
+checkbox_author.disable()
 
 
 buttons_container_1 = Container(
