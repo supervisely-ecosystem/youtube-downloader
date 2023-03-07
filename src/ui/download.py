@@ -1,23 +1,16 @@
-from supervisely.app.widgets import Button, Input, Select, Checkbox, Container
+from supervisely.app.widgets import (
+    Button, Input, Checkbox, Container, Card,
+    Empty
+)
 
-from supervisely.app.widgets import Text, NotificationBox, Progress
+from supervisely.app.widgets import (
+    Text, NotificationBox, Progress
+)
 
 input_text = Input(placeholder="Please input a link to your video in format 'https://www.youtube.com/...'")
-button_download = Button(text="Download")
 
-licenses = [
-    Select.Item(value="CC_BY", label="Creative Commons Attribution License (CC BY)"),
-    Select.Item(value="CC_BY-SA", label="Creative Commons Attribution-ShareAlike License (CC BY-SA)"),
-    Select.Item(value="CC_BY-NC", label="Creative Commons Attribution-NonCommercial License (CC BY-NC)"),
-    Select.Item(value="CC_BY-NC-SA", label="Creative Commons Attribution-NonCommercial-ShareAlike License (CC BY-NC-SA)"),
-    Select.Item(value="CC_BY-ND", label="Creative Commons Attribution-NoDerivs License (CC BY-ND)"),
-    Select.Item(value="CC0", label="Creative Commons Public Domain Dedication (CC0)"),
-]
 
-select_licenses = Select(
-    items = licenses,
-    filterable=True,
-)
+text_meta = Text(text='Add meta')
 
 checkbox_title = Checkbox(content="Title")
 checkbox_description = Checkbox(content="Description")
@@ -25,18 +18,25 @@ checkbox_author = Checkbox(content="Author", checked=True)
 checkbox_author.disable()
 
 
-buttons_container_1 = Container(
+container_meta = Container(
     widgets=[
-        button_download, 
-        select_licenses,       
         checkbox_title,
         checkbox_description,
-        checkbox_author
+        checkbox_author,
+        Empty()
     ],
     direction="horizontal",
+    fractions=[.7,1,1,4]
 )
 
-done_text = Text()
+text_notrim = Text('Optional')
+checkbox_notrim = Checkbox('Do not trim the video')
+
+
+button_download = Button(text="Download")
+
+
+done_text_download = Text()
 
 note_box_license = NotificationBox(
     title="Notice of Potential License Infringement!",
@@ -45,3 +45,27 @@ note_box_license = NotificationBox(
 
 progress_bar = Progress(message="My progress message", show_percents=True)
 button_stop_download = Button(text="Stop")
+
+container_hidden_elements = Container(
+    widgets=[
+        note_box_license, 
+        progress_bar, button_stop_download,
+        done_text_download
+    ],
+    direction="vertical",
+    gap=0
+)
+
+
+card_1 = Card(
+    title="Pull video from Youtube",
+    content=Container(widgets=[
+        input_text, 
+        text_meta,
+        container_meta,
+        text_notrim,
+        checkbox_notrim, 
+        button_download,
+        container_hidden_elements,
+    ]),
+)

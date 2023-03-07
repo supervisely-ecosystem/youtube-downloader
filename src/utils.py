@@ -13,7 +13,7 @@ def duration_to_seconds(duration):
     seconds = int(match[2][:-1]) if match[2] else 0
     return hours * 3600 + minutes * 60 + seconds
 
-def get_meta(video_id, select_licenses, note_box_license):
+def get_meta(video_id, note_box_license):
 
     API_KEY = "AIzaSyCi-0otAqE59rywdfx0IdrMzP5niYWk_uo"
 
@@ -42,7 +42,7 @@ def get_meta(video_id, select_licenses, note_box_license):
     be_aware = '\nBe aware to upload data not under Creative Commons or with stored licensed data in further projects.'
     
     if license_type=='creativeCommon':
-        message = f"Video indeed has a CreativeCommon license. But it is not possible to directly determine if a video on YouTube has a selected {select_licenses.get_value()} type of license using the YouTube Data API v3. However, you can look for clues in the video's title or description, which may include information about the license. Many creators who use {select_licenses.get_value()} licenses will include information about the license in the title or description of their videos.\nIf video has BY (Attribution) right, it is necessary to give the author or licensor the credits (attribution) in the manner specified by these. "
+        message = f"Video indeed has a CreativeCommon license. But it is not possible to directly determine if a video on YouTube has a public domain (CC0) or Attribute (CC-BY) type of license using the YouTube Data API v3. However, you can look for clues in the video's title or description, which may include information about the license. Many creators who use CreativeCommons will include information about the license in the title or description of their videos.\nIf video has BY (Attribution) right, it is necessary to give the author or licensor the credits (attribution) in the manner specified by these. "
         if len(fails) == 0:
             note_box_license.description = message
         else:

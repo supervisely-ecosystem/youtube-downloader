@@ -1,75 +1,70 @@
-"""
-- текстовый инпут для ссылки на видео
-- селектор типа лицензии - Public domain, Creative Commons, Copyleft
-- виджет для выбора интервала(начало, конец) видео для скачивания
-- галочками ставишь, какую ещё информацию о видео нужно скачать вместе 
-с видео (title, description, author, etc) и сохраняешь это в мета-данные видео
-прогресс скачивания с возможностью остановить загрузку
-- возможность указывать destination - новый проект/датасет или существующий
-приложение не завершается само. Его можно остановить только вручную
-"""
 import os, json
 
 import supervisely as sly
 from dotenv import load_dotenv
 
-from supervisely.app.widgets import Card, Container
+from supervisely.app.widgets import Container
 
-from src.ui.download import button_download, input_text, button_download, buttons_container_1
-from src.ui.download import select_licenses, note_box_license, progress_bar, button_stop_download, done_text
-from src.ui.download import checkbox_title, checkbox_description, checkbox_author
+from src.ui.download import (
+    card_1, checkbox_notrim, button_download, input_text, button_download,
+    note_box_license, progress_bar, 
+    button_stop_download, done_text_download,
+    checkbox_title, checkbox_description, checkbox_author
+)
 
-from src.ui.trim import button_trim, buttons_container_2, done_label_trim, input_min_seconds, input_max_seconds
+from src.ui.trim import (
+    card_2, button_trim, done_text_trim,
+    input_min_seconds, input_max_seconds
+)
 
-from src.ui.settings import button_api_upload, select_destination, buttons_container_3, trimmed_video_thumbnail 
-from src.ui.settings import input_project_id, input_dataset_id
+from src.ui.settings import (
+    card_3, button_api_upload, select_destination, 
+    trimmed_video_thumbnail, select_project, select_dataset,
+    checkbox_new_destination
+)
 
 from src.utils import get_youtube_id, trim, get_meta
 from pytube import YouTube, request
+
 
 # for convenient debug, has no effect in production
 load_dotenv("local.env")
 load_dotenv(os.path.expanduser("~/supervisely.env"))
 
+
 api = sly.Api()
 
+card_2.lock(message='You need to download video first')
+card_3.lock(message='You need to download video first')
 
-card_1 = Card(
-    title="Pull video from Youtube",
-    content=Container(widgets=[
-    input_text, 
-    buttons_container_1, 
-    note_box_license, 
-    progress_bar, button_stop_download,
-    done_text
-    ]),
-)
-
+# card 1
+os.environ['is_notrim'] = str(int(checkbox_notrim.is_checked()))
 note_box_license.hide()
 progress_bar.hide()
 button_stop_download.hide()
-done_text.hide()
+done_text_download.hide()
 
+# card 2
+# input_min_seconds.disable()
+# input_max_seconds.disable()
+done_text_trim.hide()
 
-
-card_2 = Card(
-    title="Trim video",
-    content=Container(widgets=[
-    buttons_container_2, done_label_trim
-    ]),
-)
-done_label_trim.hide()
-
-
-
-card_3 = Card(
-    title="Push to supervisely",
-    content=Container(widgets=[
-    buttons_container_3, trimmed_video_thumbnail 
-    ]),
-)
+# card 3
 trimmed_video_thumbnail.hide()
 
+
+@checkbox_notrim.value_changed
+def notrim(value):
+    # if value == 'new':
+    if value == True:
+        card_2.lock(message='Choosed not to trim the video')
+        os.environ['is_notrim'] = str(int(value))
+        # card_3.unlock() if 
+    else:
+        card_2.unlock()
+        os.environ['is_notrim'] = str(int(value))
+        # card_3.lock()
+ 
 
 @button_download.click
 def download_video():
@@ -78,7 +73,7 @@ def download_video():
     is_stopped = False
 
     progress_bar.hide()
-    done_text.hide()
+    done_text_download.hide()
 
     link = input_text.get_value()
     yt_video_id = get_youtube_id(link)
@@ -92,8 +87,8 @@ def download_video():
         'title' : checkbox_title.is_checked(),
     }
 
-    meta_dict = get_meta(yt_video_id, select_licenses, note_box_license)
-    
+    meta_dict = get_meta(yt_video_id, note_box_license)
+
     os.environ['meta_dict'] = json.dumps(
         {key: value for key, value in meta_dict.items() if checkbox_dict[key]}
     )
@@ -145,14 +140,14 @@ def download_video():
 
     if is_stopped:
         button_stop_download.hide()
-        done_text.text = 'Video download was stopped.'
-        done_text.status = 'warning'
-        done_text.show()
+        done_text_download.text = 'Video download was stopped.'
+        done_text_download.status = 'warning'
+        done_text_download.show()
     else:
         button_stop_download.hide()
-        done_text.text = f'Video "{meta_dict["title"]}" was succesfully downloaded.'
-        done_text.status = 'success'
-        done_text.show()
+        done_text_download.text = f'Video "{meta_dict["title"]}" was succesfully downloaded.'
+        done_text_download.status = 'success'
+        done_text_download.show()
 
 
     input_min_seconds.min = 0
@@ -160,8 +155,11 @@ def download_video():
     input_max_seconds.max = meta_dict['duration_sec']
     input_max_seconds.value = meta_dict['duration_sec']
 
-    input_min_seconds.enable()
-    input_max_seconds.enable()
+    # input_min_seconds.enable()
+    # input_max_seconds.enable()
+
+    card_2.lock('Choosed not to trim the video') if bool(int(os.environ['is_notrim'])) else card_2.unlock()
+    card_3.unlock()
 
 
 @button_stop_download.click
@@ -170,13 +168,11 @@ def stop_download():
     global is_stopped
     is_stopped = True
 
-input_min_seconds.disable()
-input_max_seconds.disable()
 
 @button_trim.click
 def trim_video():
 
-    done_label_trim.hide()
+    done_text_trim.hide()
 
     start_time = input_min_seconds.get_value()
     end_time = input_max_seconds.get_value()
@@ -197,45 +193,52 @@ def trim_video():
         end=end_time
     )
 
-    done_label_trim.show()
+    
+    done_text_trim.status = 'success'
+    done_text_trim.show()
+    card_3.unlock()
+    # checkbox_notrim.disable()
  
 
-@select_destination.value_changed
+# @select_destination.value_changed
+@checkbox_new_destination.value_changed
 def sel_dest(value):
-    if value == 'new':
-        input_project_id.disable()
-        input_dataset_id.disable()
+    # if value == 'new':
+    if value == True:
+        select_project.disable()
+        select_dataset.disable()
     else:
-        input_project_id.enable()
-        input_dataset_id.enable()
+        select_project.enable()
+        select_dataset.enable()
 
 @button_api_upload.click
 def upload():
 
-    destination = select_destination.get_value()
+    # Checking statuses
+    if not done_text_download.status == 'success':
+        raise RuntimeError('Video was not successfully downloaded.')
+    if (not done_text_trim.status == 'success')\
+        and (not bool(int(os.environ['is_notrim']))):
+        raise RuntimeError('Video was not successfully trimmed.')
 
-    if destination == 'current':
+    new_destination = checkbox_new_destination.is_checked()
 
-        if str(input_project_id.get_value()).isdigit() \
-            and str(input_dataset_id.get_value()).isdigit():
+    # if destination == 'current':
+    if not new_destination:
 
-            if api.project.get_info_by_id(
-                input_project_id.get_value()
-            ) == None:
-                raise RuntimeError(f"Project with id {input_project_id.get_value()} is either archived, doesn't exist or you don't have enough permissions to access it.")
-            
-            if api.dataset.get_info_by_id(
-                input_dataset_id.get_value()
-            ) == None:
-                raise RuntimeError(f"Dataset with id {input_dataset_id.get_value()} is either archived, doesn't exist or you don't have enough permissions to access it.")
-            
-            project_id = input_project_id.get_value()
-            dataset_id = input_dataset_id.get_value()
-
+        if select_project.get_selected_id() == None:
+            raise RuntimeError('Please specify your project.')
         else:
-            raise RuntimeError(f'Entered values are not digits. Project ID: {input_project_id.get_value()}, Dataset ID:{input_dataset_id.get_value()}')
-    
-    elif destination == 'new':
+            project_id = select_project.get_selected_id()
+
+        if select_dataset.get_selected_id() == None:
+            raise RuntimeError('Please specify your dataset.')
+        else:
+            dataset_id = select_dataset.get_selected_id()
+            
+ 
+    # elif destination == 'new':
+    elif new_destination:
 
         workspace_id = sly.env.workspace_id()
 
@@ -249,13 +252,21 @@ def upload():
 
         project_id = project.id
         dataset_id = dataset.id
+
     else:
-        raise ValueError(f'Unknown error with value "{destination}"')
+        raise ValueError(f'Unknown error with value "{new_destination}"')
+
 
     yt_video_id = os.environ['yt_video_id']
-    video_name = f"trimmed_{yt_video_id}.mp4"
+
+    if bool(int( os.environ['is_notrim'] )):
+        video_name = f"{yt_video_id}.mp4"
+    else:
+        video_name = f"trimmed_{yt_video_id}.mp4"
+
     video_path = os.path.join(
-        os.getcwd(), f'src/videos/trimmed_{yt_video_id}.mp4'
+        os.getcwd(),
+        f'src/videos/{video_name}'
     )
    
     print(f"Project ID: {project_id}")
@@ -276,7 +287,6 @@ def upload():
     trimmed_video_thumbnail.show()
 
     print(f'Video "{video.name}" uploaded to Supervisely with ID:{video.id}')
-
 
 
 layout = Container(widgets=[card_1, card_2, card_3], direction="vertical")
