@@ -1,10 +1,6 @@
 from supervisely.app.widgets import (
     Button, Input, Checkbox, Container, Card,
-    Empty
-)
-
-from supervisely.app.widgets import (
-    Text, NotificationBox, Progress
+    Empty,  Text, NotificationBox, Progress
 )
 
 input_text = Input(placeholder="Please input a link to your video in format 'https://www.youtube.com/...'")
@@ -53,7 +49,7 @@ container_hidden_elements = Container(
         done_text_download
     ],
     direction="vertical",
-    gap=0
+    gap=3
 )
 
 

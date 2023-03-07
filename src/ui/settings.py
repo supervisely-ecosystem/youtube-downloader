@@ -59,6 +59,6 @@ card_3 = Card(
         checkbox_new_destination, 
         container_project_dataset,
         button_api_upload, 
-        trimmed_video_thumbnail 
+        trimmed_video_thumbnail ,
     ]),
 )

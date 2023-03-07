@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from supervisely.app.widgets import Container
 
 from src.ui.download import (
-    card_1, checkbox_notrim, button_download, input_text, button_download,
+    card_1, checkbox_notrim, button_download, input_text,
     note_box_license, progress_bar, 
     button_stop_download, done_text_download,
     checkbox_title, checkbox_description, checkbox_author
@@ -18,7 +18,7 @@ from src.ui.trim import (
 )
 
 from src.ui.settings import (
-    card_3, button_api_upload, select_destination, 
+    card_3, button_api_upload, 
     trimmed_video_thumbnail, select_project, select_dataset,
     checkbox_new_destination
 )
@@ -45,8 +45,6 @@ button_stop_download.hide()
 done_text_download.hide()
 
 # card 2
-# input_min_seconds.disable()
-# input_max_seconds.disable()
 done_text_trim.hide()
 
 # card 3
@@ -59,11 +57,9 @@ def notrim(value):
     if value == True:
         card_2.lock(message='Choosed not to trim the video')
         os.environ['is_notrim'] = str(int(value))
-        # card_3.unlock() if 
     else:
         card_2.unlock()
         os.environ['is_notrim'] = str(int(value))
-        # card_3.lock()
  
 
 @button_download.click
@@ -155,10 +151,8 @@ def download_video():
     input_max_seconds.max = meta_dict['duration_sec']
     input_max_seconds.value = meta_dict['duration_sec']
 
-    # input_min_seconds.enable()
-    # input_max_seconds.enable()
 
-    card_2.lock('Choosed not to trim the video') if bool(int(os.environ['is_notrim'])) else card_2.unlock()
+    card_2.lock('Selected not to trim the video') if bool(int(os.environ['is_notrim'])) else card_2.unlock()
     card_3.unlock()
 
 
@@ -200,10 +194,9 @@ def trim_video():
     # checkbox_notrim.disable()
  
 
-# @select_destination.value_changed
+
 @checkbox_new_destination.value_changed
 def sel_dest(value):
-    # if value == 'new':
     if value == True:
         select_project.disable()
         select_dataset.disable()
@@ -216,15 +209,14 @@ def upload():
 
     # Checking statuses
     if not done_text_download.status == 'success':
-        raise RuntimeError('Video was not successfully downloaded.')
+        raise RuntimeError('Video was not downloaded.')
     if (not done_text_trim.status == 'success')\
         and (not bool(int(os.environ['is_notrim']))):
-        raise RuntimeError('Video was not successfully trimmed.')
+        raise RuntimeError('Video was not trimmed.')
 
-    new_destination = checkbox_new_destination.is_checked()
+    new_project_dataset = checkbox_new_destination.is_checked()
 
-    # if destination == 'current':
-    if not new_destination:
+    if not new_project_dataset:
 
         if select_project.get_selected_id() == None:
             raise RuntimeError('Please specify your project.')
@@ -237,8 +229,7 @@ def upload():
             dataset_id = select_dataset.get_selected_id()
             
  
-    # elif destination == 'new':
-    elif new_destination:
+    elif new_project_dataset:
 
         workspace_id = sly.env.workspace_id()
 
@@ -254,7 +245,7 @@ def upload():
         dataset_id = dataset.id
 
     else:
-        raise ValueError(f'Unknown error with value "{new_destination}"')
+        raise ValueError(f'Unknown error with value "{new_project_dataset}"')
 
 
     yt_video_id = os.environ['yt_video_id']
@@ -278,10 +269,14 @@ def upload():
         dataset_id,
         name=video_name,
         path=video_path,
-        meta=meta_dict
+        # meta=meta_dict 
     )
 
+    # Add meta
+    api.video.update_custom_data(id=video.id, data=meta_dict)
+
     video_info = api.video.get_info_by_id(id=video.id)
+
 
     trimmed_video_thumbnail.set_video(video_info)
     trimmed_video_thumbnail.show()
