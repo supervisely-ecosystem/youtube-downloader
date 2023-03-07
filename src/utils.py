@@ -1,4 +1,5 @@
 import os, re
+import supervisely as sly
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -107,3 +108,4 @@ def trim(input_path, output_path, start:int=30, end:int=60):
     ffmpeg.run(output, overwrite_output=True)
 
     print('Video succesfully trimmed!')
+    
