@@ -181,6 +181,7 @@ def download_video():
         print('Video downloaded to directory:', os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4'))
 
 
+
     input_min_seconds.min = 0
     input_min_seconds.value = 0
     input_max_seconds.max = meta_dict['duration_sec']
