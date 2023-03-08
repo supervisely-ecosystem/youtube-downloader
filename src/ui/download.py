@@ -168,17 +168,17 @@ def download_video():
                 exit()
 
             
-        if is_stopped_fixed:
-            button_stop_download.hide()
-            done_text_download.text = 'Video download was stopped.'
-            done_text_download.status = 'warning'
-            done_text_download.show()
-        else:
-            button_stop_download.hide()
-            done_text_download.text = f'Video "{meta_dict["title"]}" was succesfully downloaded.'
-            done_text_download.status = 'success'
-            done_text_download.show()
-            print('Video downloaded to directory:', os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4'))
+    if is_stopped_fixed:
+        button_stop_download.hide()
+        done_text_download.text = 'Video download was stopped.'
+        done_text_download.status = 'warning'
+        done_text_download.show()
+    else:
+        button_stop_download.hide()
+        done_text_download.text = f'Video "{meta_dict["title"]}" was succesfully downloaded.'
+        done_text_download.status = 'success'
+        done_text_download.show()
+        print('Video downloaded to directory:', os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4'))
 
 
     input_min_seconds.min = 0
