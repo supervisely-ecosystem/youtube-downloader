@@ -10,7 +10,7 @@ from src.ui.upload import card_3
 from src.utils import make_trim
 
 from src.ui._common_widgets import (
-    checkbox_notrim, done_text_trim, 
+    checkbox_notrim, done_text_download, done_text_trim, 
     input_min_seconds, input_max_seconds
 )
 
@@ -65,7 +65,7 @@ def notrim(value):
 def trim_video():
 
     # check status
-    if not done_text_trim.status=='success':
+    if not done_text_download.status=='success':
         raise RuntimeError('Video was not downloaded')
 
     done_text_trim.hide()

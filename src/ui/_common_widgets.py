@@ -1,6 +1,5 @@
 from supervisely.app.widgets import (
-    Button, Input, Checkbox, Container, Card,
-    Empty,  Text, NotificationBox, Progress, InputNumber
+    Checkbox, Text, NotificationBox, InputNumber
 )
 
 done_text_download = Text()

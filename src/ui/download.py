@@ -13,7 +13,6 @@ from src.ui._common_widgets import (
 
 from src.ui.trim import card_2
 from src.ui.upload import card_3
-from src.ui._common_widgets import checkbox_notrim
 
 from src.utils import get_youtube_id, get_meta
 from pytube import YouTube, request
