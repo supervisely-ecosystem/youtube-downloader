@@ -4,7 +4,7 @@ from supervisely.app.widgets import Container
 
 from src.ui.download import card_1
 from src.ui.trim import card_2
-from src.ui.settings import card_3
+from src.ui.upload import card_3
 
 
 layout = Container(
