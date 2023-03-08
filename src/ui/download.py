@@ -90,6 +90,7 @@ def download_video():
 
     global is_stopped
     is_stopped = False
+    is_stopped_fixed = is_stopped
 
     progress_bar.hide()
     done_text_download.hide()
@@ -158,7 +159,7 @@ def download_video():
                             downloaded += len(chunk)
                             pbar.update(
                                 int(downloaded * 100 / filesize)
-                            )                    
+                            )     
                         else:
                             print("Video downloaded successfully!")
                             stream.close()
