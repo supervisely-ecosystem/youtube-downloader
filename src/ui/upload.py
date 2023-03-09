@@ -8,7 +8,7 @@ from supervisely.app.widgets import (
 )
 
 import os, json
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import supervisely as sly
 
 from src.ui._common_widgets import (
@@ -18,12 +18,13 @@ from src.ui._common_widgets import (
 )
 
 # for convenient debug, has no effect in production
-load_dotenv("local.env")
-load_dotenv(os.path.expanduser("~/supervisely.env"))
+# load_dotenv("local.env")
+# load_dotenv(os.path.expanduser("~/supervisely.env"))
 
-api = sly.Api()
+# g.api = sly.g.api()
 
 button_api_upload = Button(text="Upload to Supervisely")
+
 
 destination = DestinationProject(
     workspace_id= sly.env.workspace_id(), 
@@ -73,7 +74,7 @@ def upload():
 
     project_id = destination.get_selected_project_id()
     if project_id is None:
-        project = api.project.create(
+        project = g.api.project.create(
             workspace_id=workspace_id,
             name=destination.get_project_name(),
             type=sly.ProjectType.VIDEOS,
@@ -83,19 +84,19 @@ def upload():
 
     dataset_id = destination.get_selected_dataset_id()
     if dataset_id is None:
-        dataset = api.dataset.create(
+        dataset = g.api.dataset.create(
             project_id=project_id, 
             name=destination.get_dataset_name(), 
             change_name_if_conflict=True
         )
         dataset_id = dataset.id
 
-    yt_video_id = g.yt_video_id
+    # yt_video_id = 
 
     if checkbox_notrim.is_checked():
-        video_name = f"{yt_video_id}.mp4"
+        video_name = f"{g.YT_VIDEO_ID}.mp4"
     else:
-        video_name = f"trimmed_{yt_video_id}.mp4"
+        video_name = f"trimmed_{g.YT_VIDEO_ID}.mp4"
 
     video_path = os.path.join(
         os.getcwd(),
@@ -105,9 +106,9 @@ def upload():
     print(f"Project ID: {project_id}")
     print(f"Dataset ID: {dataset_id}")
 
-    meta_dict = json.loads(g.meta_dict)
+    meta_dict = json.loads(g.META_DICT)
  
-    video = api.video.upload_path(
+    video = g.api.video.upload_path(
         dataset_id,
         name=video_name,
         path=video_path,
@@ -115,9 +116,9 @@ def upload():
     )
 
     # Add meta
-    api.video.update_custom_data(id=video.id, data=meta_dict)
+    g.api.video.update_custom_data(id=video.id, data=meta_dict)
 
-    video_info = api.video.get_info_by_id(id=video.id)
+    video_info = g.api.video.get_info_by_id(id=video.id)
     trimmed_video_thumbnail.set_video(video_info)
     trimmed_video_thumbnail.show()
 

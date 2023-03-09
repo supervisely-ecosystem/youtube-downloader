@@ -32,7 +32,7 @@ def duration_to_seconds(duration):
 def get_meta(video_id, note_box_license_1, note_box_license_2):
 
     # Set up the API client
-    youtube = build('youtube', 'v3', developerKey=g.API_KEY)
+    youtube = build('youtube', 'v3', developerKey=g.YT_API_KEY)
 
     # Get the video information
     try:

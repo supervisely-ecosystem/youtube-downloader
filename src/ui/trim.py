@@ -15,11 +15,11 @@ from src.ui._common_widgets import (
 )
 
 
-text_min_seconds = Text(text="Start second", status="text")
-text_max_seconds = Text(text="End second", status="text")
+# text_min_seconds = Text(text="Start second", status="text")
+# text_max_seconds = Text(text="End second", status="text")
 
 field_min_sec = Field(content=input_min_seconds, title="Start second")
-field_max_sec = Field(content=input_max_seconds, title="Start second")
+field_max_sec = Field(content=input_max_seconds, title="End second")
 
 
 container_trim_interval = Container(
@@ -73,7 +73,7 @@ def trim_video():
     start_time = input_min_seconds.get_value()
     end_time = input_max_seconds.get_value()
 
-    yt_video_id = g.yt_video_id
+    yt_video_id = g.YT_VIDEO_ID
 
     input_path = os.path.join(
         os.getcwd(), f'src/videos/{yt_video_id}.mp4'

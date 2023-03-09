@@ -18,5 +18,4 @@ note_box_license_2 = NotificationBox(
     box_type="warning",
 )
 
-# text_notrim = Text('Optional')
 checkbox_notrim = Checkbox('Do not trim the video')

@@ -12,4 +12,3 @@ layout = Container(
     direction="vertical"
 )
 app = sly.Application(layout=layout)
-
