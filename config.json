@@ -1,5 +1,5 @@
 {
-    "release": { "version":"v1.0.18", "name":"init" },
+    "release": { "version":"v1.0.20", "name":"init" },
     "slug": "grokhi/yt_downloader_test",
     "name": "YT downloader",
     "type": "app",
