@@ -1,4 +1,5 @@
 import supervisely as sly
+import os
 
 from supervisely.app.widgets import Container
 
@@ -11,4 +12,8 @@ layout = Container(
     widgets=[card_1, card_2, card_3], 
     direction="vertical"
 )
-app = sly.Application(layout=layout, static_dir='src/videos')
+
+if not os.path.exists('src/videos/'):
+    os.makedirs('src/videos/')
+
+app = sly.Application(layout=layout, static_dir='src/videos/')

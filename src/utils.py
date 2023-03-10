@@ -35,12 +35,15 @@ def get_youtube_id(link):
     print(f'Youtube ID is {video_id}')
     return video_id
 
-def duration_to_seconds(duration):
-    """Converts a YouTube video duration from ISO 8601 format to seconds."""
-    match = re.match('PT(\d+H)?(\d+M)?(\d+S)?', duration).groups()
-    hours = int(match[0][:-1]) if match[0] else 0
-    minutes = int(match[1][:-1]) if match[1] else 0
-    seconds = int(match[2][:-1]) if match[2] else 0
+# def duration_to_seconds(duration):
+#     """Converts a YouTube video duration from ISO 8601 format to seconds."""
+#     match = re.match('PT(\d+H)?(\d+M)?(\d+S)?', duration).groups()
+#     hours = int(match[0][:-1]) if match[0] else 0
+#     minutes = int(match[1][:-1]) if match[1] else 0
+#     seconds = int(match[2][:-1]) if match[2] else 0
+#     return hours * 3600 + minutes * 60 + seconds
+
+def input_duration_to_seconds(hours, minutes, seconds):
     return hours * 3600 + minutes * 60 + seconds
 
 def get_meta(video_id, note_box_license_1, note_box_license_2):
@@ -73,14 +76,11 @@ def get_meta(video_id, note_box_license_1, note_box_license_2):
     video_info_meta = {
         'license_type' : license_type,
         'is_licensed_content' : is_licensed_content,
-        'duration_sec' : duration_to_seconds(
-            video_info['items'][0]['contentDetails']['duration'] 
-        ),
+        'duration' : video_info['items'][0]['contentDetails']['duration'],
         'author' : video_info['items'][0]['snippet']['channelTitle'],
         'description' : video_info['items'][0]['snippet']['description'],
         'title' : video_info['items'][0]['snippet']['title'],
     }
-
 
     print(f'Received YouTube meta data is:\n{video_info_meta}')
     return video_info_meta

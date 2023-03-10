@@ -1,4 +1,4 @@
-import os, json
+import os, json, re
 import src.globals as g
 
 from supervisely.app.widgets import (
@@ -7,19 +7,26 @@ from supervisely.app.widgets import (
 )
 
 from src.ui._common_widgets import (
-    done_text_download, input_min_seconds, input_max_seconds,
-    note_box_license_1, note_box_license_2#, video_player
+    done_text_download, 
+    input_min_hours, input_min_minutes, input_min_seconds, 
+    input_max_hours, input_max_minutes, input_max_seconds,
+    note_box_license_1, note_box_license_2, video_player
 )
 
 from src.ui.trim import card_2
 from src.ui.upload import card_3
 
-from src.utils import get_youtube_id, get_meta, check_connection
+from src.utils import (
+    get_youtube_id, get_meta, check_connection
+)
 from pytube import YouTube, request
 
 input_yt_link = Input(placeholder="Please input a link to your video in format 'https://www.youtube.com/...'")
 
-input_yt_API_KEY = Input(placeholder="Please input YouTube v3 API KEY")#, input_type='password')
+input_yt_API_KEY = Input(
+    placeholder="Please input YouTube v3 API KEY", 
+    type='password'
+)
 
 text_source_info = Text()
 text_source_info.status = 'info'
@@ -73,7 +80,7 @@ container_hidden_elements = Container(
         done_text_download,
     ],
     direction="vertical",
-    gap=0
+    # gap=0
 )
 
 
@@ -95,10 +102,7 @@ else:
         widgets=[input_yt_link]
     )
 
-response = check_connection()
-text_connection_status.status = response[0]
-text_connection_status.text = response[1]
-text_connection_status.show()
+text_connection_status.hide()
 
 card_1 = Card(
     title="Pull video from Youtube",
@@ -115,11 +119,13 @@ card_1 = Card(
 
 
 # card 1 states
-note_box_license_1.hide()
-note_box_license_2.hide()
-progress_bar.hide()
+# note_box_license_1.hide()
+# note_box_license_2.hide()
+# progress_bar.hide()
 button_stop_download.hide()
-done_text_download.hide()
+# done_text_download.hide()
+
+container_hidden_elements.hide()
 
 card_2.lock(message='Please download video first')
 card_3.lock(message='Please download video first')
@@ -137,13 +143,18 @@ def download_video():
 
     if g.YT_API_KEY is None:
         g.YT_API_KEY = input_yt_API_KEY.get_value()
+    # checking connection
+    response = check_connection()
+    text_connection_status.status = response[0]
+    text_connection_status.text = response[1]
+    text_connection_status.show()
 
     global is_stopped
     is_stopped = False
 
     progress_bar.hide()
     done_text_download.hide()
-    container_hidden_elements._gap = 10
+    container_hidden_elements.show()
 
     link = input_yt_link.get_value()
     yt_video_id = get_youtube_id(link)
@@ -154,7 +165,7 @@ def download_video():
     meta_dict_2save = {
         'license_type' : True,
         'is_licensed_content' : True,
-        'duration_sec' : False,
+        'duration' : False,
         'author' : checkbox_author.is_checked(),
         'description' : checkbox_description.is_checked(),
         'title' : checkbox_title.is_checked(),
@@ -170,8 +181,6 @@ def download_video():
     # video_player._url = input_yt_link.get_value()
     g.META_DICT = json.dumps(meta_dict_2save)
 
-    if not os.path.exists('src/videos/'):
-        os.makedirs('src/videos/')
     filename = os.path.join(os.getcwd(), f"src/videos/{yt_video_id}.mp4")
 
     if os.path.exists(filename):
@@ -231,21 +240,29 @@ def download_video():
                 exit()
 
             
-
         button_stop_download.hide()
         done_text_download.text = f'Video "{full_meta_dict["title"]}" was succesfully downloaded.'
         done_text_download.status = 'success'
         done_text_download.show()
         print('Video downloaded to directory:', os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4'))
 
+    video_player.set_video(
+        # os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4')
+        f'static/{yt_video_id}.mp4'
+    )
 
+    match = re.match('PT(\d+H)?(\d+M)?(\d+S)?', full_meta_dict['duration']).groups()
+    
+    input_max_hours.max = int(match[0][:-1]) if match[0] else 0
+    input_max_hours.value = int(match[0][:-1]) if match[0] else 0
+    
+    input_max_minutes.max = int(match[1][:-1]) if match[1] else 0
+    input_max_minutes.value = int(match[1][:-1]) if match[1] else 0
+    
+    input_max_seconds.max = int(match[2][:-1]) if match[2] else 0
+    input_max_seconds.value = int(match[2][:-1]) if match[2] else 0
 
-    input_min_seconds.min = 0
-    input_min_seconds.value = 0
-    input_max_seconds.max = full_meta_dict['duration_sec']
-    input_max_seconds.value = full_meta_dict['duration_sec']
-
-
+    
     card_2.unlock()
 
 
@@ -254,4 +271,3 @@ def stop_download():
 
     global is_stopped
     is_stopped = True
-
