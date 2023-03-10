@@ -8,19 +8,23 @@ from supervisely.app.widgets import (
 
 from src.ui._common_widgets import (
     done_text_download, input_min_seconds, input_max_seconds,
-    note_box_license_1, note_box_license_2
+    note_box_license_1, note_box_license_2#, video_player
 )
 
 from src.ui.trim import card_2
 from src.ui.upload import card_3
 
-from src.utils import get_youtube_id, get_meta
+from src.utils import get_youtube_id, get_meta, check_connection
 from pytube import YouTube, request
 
 input_yt_link = Input(placeholder="Please input a link to your video in format 'https://www.youtube.com/...'")
 
-input_yt_API_KEY = Input(placeholder="Please input YouTube v3 API KEY")
-# text_available_licenses = Text(text="Available licenses: 'youtube', 'creativeCommon'")
+input_yt_API_KEY = Input(placeholder="Please input YouTube v3 API KEY")#, input_type='password')
+
+text_source_info = Text()
+text_source_info.status = 'info'
+text_connection_status = Text()
+
 
 field_available_licenses = Field(
     content=Empty(), title="",
@@ -41,7 +45,7 @@ container_meta = Container(
         Empty(),
     ],
     direction="horizontal",
-    fractions=[.7,1,1,4],
+    fractions=[.5,1,1,8],
 )
 
 
@@ -49,7 +53,7 @@ field_meta = Field(content=container_meta, title="Add meta")
 
 
 button_download = Button(text="Download")
-button_stop_download = Button(text="Stop")
+button_stop_download = Button(text="Stop", button_type='danger')
 
 container_buttons = Container(
     widgets=[
@@ -69,12 +73,12 @@ container_hidden_elements = Container(
         done_text_download,
     ],
     direction="vertical",
-    gap=3
+    gap=0
 )
 
 
-
 if g.YT_API_KEY is None:
+    text_source_info.text = 'YouTube API key should be loaded manually'
     input_yt_API_KEY.show()
     container_input = Container(
         widgets=[
@@ -85,16 +89,24 @@ if g.YT_API_KEY is None:
         fractions=[3,1],    
     )
 else:
+    text_source_info.text = 'YouTube API key is loaded from the team files.'
     input_yt_API_KEY.hide()
     container_input = Container(
         widgets=[input_yt_link]
     )
 
+response = check_connection()
+text_connection_status.status = response[0]
+text_connection_status.text = response[1]
+text_connection_status.show()
+
 card_1 = Card(
     title="Pull video from Youtube",
-    content=Container(widgets=[
+    content=Container(widgets=[ 
         container_input,
         field_available_licenses,
+        text_source_info,
+        text_connection_status,
         field_meta,
         container_buttons,
         container_hidden_elements,
@@ -119,7 +131,8 @@ def download_video():
     # check statuses
     if input_yt_link.get_value()=="":
         raise RuntimeError('Please input YouTube link.')
-    if input_yt_API_KEY.get_value()=="":
+    if input_yt_API_KEY.get_value()=="" \
+        and g.YT_API_KEY==None:
         raise RuntimeError('Please input your API key.')
 
     if g.YT_API_KEY is None:
@@ -127,17 +140,18 @@ def download_video():
 
     global is_stopped
     is_stopped = False
-    is_stopped_fixed = is_stopped
 
     progress_bar.hide()
     done_text_download.hide()
+    container_hidden_elements._gap = 10
 
     link = input_yt_link.get_value()
     yt_video_id = get_youtube_id(link)
 
     g.YT_VIDEO_ID = str(yt_video_id)
 
-    meta2save_dict = {
+
+    meta_dict_2save = {
         'license_type' : True,
         'is_licensed_content' : True,
         'duration_sec' : False,
@@ -146,18 +160,22 @@ def download_video():
         'title' : checkbox_title.is_checked(),
     }
 
-    meta_dict = get_meta(yt_video_id, note_box_license_1, note_box_license_2)
+    full_meta_dict = get_meta(yt_video_id, note_box_license_1, note_box_license_2)
+    meta_dict_2save = {key: value for key, value in full_meta_dict.items() if meta_dict_2save[key]}
 
-    g.META_DICT = json.dumps(
-        {key: value for key, value in meta_dict.items() if meta2save_dict[key]}
-    )
+    meta_dict_2save['youtube_link'] = input_yt_link.get_value()
+    meta_dict_2save['youtube_id'] = yt_video_id
+
+    # g.YT_VIDEO_LINK = input_yt_link.get_value()
+    # video_player._url = input_yt_link.get_value()
+    g.META_DICT = json.dumps(meta_dict_2save)
 
     if not os.path.exists('src/videos/'):
         os.makedirs('src/videos/')
     filename = os.path.join(os.getcwd(), f"src/videos/{yt_video_id}.mp4")
 
     if os.path.exists(filename):
-        done_text_download.text = f'Video "{meta_dict["title"]}" was already downloaded.'
+        done_text_download.text = f'Video "{full_meta_dict["title"]}" was already downloaded.'
         done_text_download.status = 'success'
         done_text_download.show()
         # card_2.unlock()
@@ -187,11 +205,16 @@ def download_video():
                     while True:
                         if is_stopped:
                             print('Download cancelled')
-                            is_stopped_fixed = is_stopped
                             stream.close()
                             f.close(),
                             os.remove(filename)
-                            break
+
+                            button_stop_download.hide()
+                            done_text_download.text = 'Video download was stopped.'
+                            done_text_download.status = 'warning'
+                            done_text_download.show()
+                            return None
+                            # break
                         chunk = next(stream, None) # get next chunk of video
                         if chunk:
                             f.write(chunk)
@@ -208,15 +231,9 @@ def download_video():
                 exit()
 
             
-    if is_stopped_fixed:
+
         button_stop_download.hide()
-        done_text_download.text = 'Video download was stopped.'
-        done_text_download.status = 'warning'
-        done_text_download.show()
-        return None
-    else:
-        button_stop_download.hide()
-        done_text_download.text = f'Video "{meta_dict["title"]}" was succesfully downloaded.'
+        done_text_download.text = f'Video "{full_meta_dict["title"]}" was succesfully downloaded.'
         done_text_download.status = 'success'
         done_text_download.show()
         print('Video downloaded to directory:', os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4'))
@@ -225,12 +242,11 @@ def download_video():
 
     input_min_seconds.min = 0
     input_min_seconds.value = 0
-    input_max_seconds.max = meta_dict['duration_sec']
-    input_max_seconds.value = meta_dict['duration_sec']
+    input_max_seconds.max = full_meta_dict['duration_sec']
+    input_max_seconds.value = full_meta_dict['duration_sec']
 
 
     card_2.unlock()
-
 
 
 @button_stop_download.click

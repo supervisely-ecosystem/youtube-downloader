@@ -1,6 +1,6 @@
 supervisely
 google-api-python-client
 pytube
-ffmpeg
-# ffmpeg-python
+# ffmpeg
+ffmpeg-python
 # moviepy

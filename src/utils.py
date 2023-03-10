@@ -1,4 +1,6 @@
 import os, re
+import requests
+
 # import supervisely as sly
 import src.globals as g
 
@@ -6,6 +8,18 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 import ffmpeg
+
+def check_connection():
+    response = requests.get(
+        "https://www.googleapis.com/youtube/v3/videos", 
+        params={"id": 'dQw4w9WgXcQ', "key": g.YT_API_KEY}
+    )
+    if response.status_code == 200:
+        print("Connection to YouTube is established.")
+        return ['success' ,"Connection to YouTube is established."]
+    else:
+        print("Failed to establish connection to YouTube.")
+        return ['error', "Failed to establish connection to YouTube."]
 
 
 def get_youtube_id(link):

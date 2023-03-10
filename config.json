@@ -1,5 +1,5 @@
 {
-    "release": { "version":"v1.0.12", "name":"init" },
+    "release": { "version":"v1.0.18", "name":"init" },
     "slug": "grokhi/yt_downloader_test",
     "name": "YT downloader",
     "type": "app",
@@ -7,7 +7,7 @@
     "categories": [
       "development"
     ],
-    "description": "Demonstrates how to use Supervisely widgets",
+    "description": "Downloads and trim video from Youtube.",
     "docker_image": "supervisely/base-py-sdk:latest",
     "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
     "port": 8000,
@@ -15,6 +15,6 @@
     "poster": "https://user-images.githubusercontent.com/12828725/182181033-d0d1a690-8388-472e-8862-e0cacbd4f082.png",
     "context_menu": {
       "context_category": "Import",
-      "target": ["files_file"]
+      "target": ["ecosystem", "files_file" ]
     }
 }

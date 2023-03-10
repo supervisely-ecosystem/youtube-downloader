@@ -1,5 +1,5 @@
 from supervisely.app.widgets import (
-    Checkbox, Text, NotificationBox, InputNumber
+    Checkbox, Text, NotificationBox, InputNumber, VideoPlayer
 )
 
 done_text_download = Text()
@@ -18,4 +18,6 @@ note_box_license_2 = NotificationBox(
     box_type="warning",
 )
 
-checkbox_notrim = Checkbox('Do not trim the video')
+checkbox_notrim = Checkbox('Do not trim the video', checked=True)
+
+# video_player = VideoPlayer()
