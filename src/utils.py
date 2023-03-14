@@ -22,7 +22,6 @@ def check_connection(url, name):
 
 
 def get_youtube_id(link):
-
     try:
         # Extract the video ID from the link using regular expressions
         video_id = re.search(r'(?<=v=)[^&#]+', link).group(0)
@@ -46,28 +45,9 @@ def input_duration_to_seconds(hours, minutes, seconds):
 
 def get_meta(video_id, note_box_license_1, note_box_license_2):
 
-    # Build the request URL with your API key and a sample API endpoint
-    url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id=INVALID_VIDEO_ID&key={g.YT_API_KEY}"
-
-    # Make the request
-    response = requests.get(url)
-
-    # Check the response status code
-    if response.status_code == 200:
-        print("API key is valid.")
-        text_check_input_ytapi.text = 'API key is valid'
-        text_check_input_ytapi.status = 'success'
-        text_check_input_ytapi.show()
-    else:
-        text_check_input_ytapi.text = 'Invalid or unauthorized API key'
-        text_check_input_ytapi.status = 'error'
-        text_check_input_ytapi.show()
-        return 'error'
-
     # Set up the API client
     youtube = build('youtube', 'v3', developerKey=g.YT_API_KEY)
        
-
     # Get the video information
     try:
         video_info = youtube.videos().list(part='snippet,contentDetails,status', id=video_id).execute()

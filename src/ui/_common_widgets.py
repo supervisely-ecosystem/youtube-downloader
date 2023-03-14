@@ -1,6 +1,11 @@
 from supervisely.app.widgets import (
     Checkbox, Text, NotificationBox, InputNumber, VideoPlayer,
-    Slider, Container, Progress, Field
+    Slider, Container, Progress, Field, Input
+)
+
+input_yt_API_KEY = Input(
+    placeholder="Please input YouTube v3 API KEY", 
+    type='password'
 )
 
 text_check_input_ytlink = Text()

@@ -13,7 +13,7 @@ from src.ui._common_widgets import (
     slider, field_slider
 )
 
-from src.ui.source_info import input_yt_API_KEY
+# from src.ui.source_info import input_yt_API_KEY
 from src.ui.trim import card_2
 from src.ui.upload import card_3
 
@@ -78,7 +78,6 @@ card_1 = Card(
     ]),
 )
 
-
 # card 1 states
 # progress_bar.hide()
 button_stop_download.hide()
@@ -93,12 +92,10 @@ card_3.lock(message='Please download video first')
 @button_download.click
 def download_video():
 
+    global is_stopped
+    is_stopped = False
+
     # check statuses
-    if input_yt_API_KEY.get_value()=="" and g.YT_API_KEY==None:
-        text_check_input_ytapi.text = 'Input form is empty. Please input YouTube API key.'
-        text_check_input_ytapi.status = 'error'
-        text_check_input_ytapi.show()
-        return None
     if input_yt_link.get_value()=="":
         text_check_input_ytlink.text = 'Input form is empty. Please input YouTube link.'
         text_check_input_ytlink.status = 'error'
@@ -112,14 +109,6 @@ def download_video():
     else:
         text_check_input_ytlink.hide()
 
-
-    if g.YT_API_KEY is None:
-        g.YT_API_KEY = input_yt_API_KEY.get_value()
-
-
-    global is_stopped
-    is_stopped = False
-
     progress_bar.hide()
     done_text_download.hide()
     note_box_license_1.hide()
@@ -128,9 +117,7 @@ def download_video():
 
     link = input_yt_link.get_value()
     yt_video_id = get_youtube_id(link)
-
     g.YT_VIDEO_ID = str(yt_video_id)
-
 
     meta_dict_2save = {
         'license_type' : True,
@@ -143,9 +130,7 @@ def download_video():
     }
 
     full_meta_dict = get_meta(yt_video_id, note_box_license_1, note_box_license_2)
-    if full_meta_dict == 'error':
-        print('Invalid or unauthorized API key')
-        return None
+
 
     meta_dict_2save = {key: value for key, value in full_meta_dict.items() if meta_dict_2save[key]}
 
