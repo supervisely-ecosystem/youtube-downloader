@@ -12,6 +12,7 @@ import src.globals as g
 
 from src.utils import check_connection
 
+from src.ui._common_widgets import text_check_input_ytapi
 
 text_source_info = Text()
 text_source_info.status = 'info'
@@ -29,11 +30,16 @@ response = check_connection("https://www.youtube.com/", 'YouTube')
 text_connection_status.status = response[0]
 text_connection_status.text = response[1]
 
+
+text_check_input_ytapi.hide()
+
 card_0 = Card(
     title="Source info",
     content=Container(widgets=[ 
         input_yt_API_KEY,
+        text_check_input_ytapi,
         text_source_info,
         text_connection_status,
+        
     ]),
 )

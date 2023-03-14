@@ -7,7 +7,7 @@ from supervisely.app.widgets import (
 )
 
 from src.ui._common_widgets import (
-    container_hidden_elements,
+    container_hidden_elements, text_check_input_ytapi, text_check_input_ytlink,
     done_text_download, progress_bar,
     note_box_license_1, note_box_license_2, video_player, 
     slider, field_slider
@@ -70,6 +70,7 @@ card_1 = Card(
     title="Pull video from Youtube",
     content=Container(widgets=[ 
         input_yt_link,
+        text_check_input_ytlink,
         field_available_licenses,
         field_meta,
         container_buttons,
@@ -81,6 +82,7 @@ card_1 = Card(
 # card 1 states
 # progress_bar.hide()
 button_stop_download.hide()
+text_check_input_ytlink.hide()
 # done_text_download.hide()
 container_hidden_elements.hide()
 
@@ -92,10 +94,24 @@ card_3.lock(message='Please download video first')
 def download_video():
 
     # check statuses
-    if input_yt_link.get_value()=="":
-        raise RuntimeError('Please input YouTube link.')
     if input_yt_API_KEY.get_value()=="" and g.YT_API_KEY==None:
-        raise RuntimeError('Please input your API key.')
+        text_check_input_ytapi.text = 'Input form is empty. Please input YouTube API key.'
+        text_check_input_ytapi.status = 'error'
+        text_check_input_ytapi.show()
+        return None
+    if input_yt_link.get_value()=="":
+        text_check_input_ytlink.text = 'Input form is empty. Please input YouTube link.'
+        text_check_input_ytlink.status = 'error'
+        text_check_input_ytlink.show()
+        return None
+    if not input_yt_link.get_value().startswith("https://www.youtube.com/"): 
+        text_check_input_ytlink.text = "Invalid YouTube link. Please use desktop format of url starting with 'https://www.youtube.com/...'"
+        text_check_input_ytlink.status = 'error'
+        text_check_input_ytlink.show()
+        return None
+    else:
+        text_check_input_ytlink.hide()
+
 
     if g.YT_API_KEY is None:
         g.YT_API_KEY = input_yt_API_KEY.get_value()
@@ -127,6 +143,9 @@ def download_video():
     }
 
     full_meta_dict = get_meta(yt_video_id, note_box_license_1, note_box_license_2)
+    if full_meta_dict == 'error':
+        print('Invalid or unauthorized API key')
+        return None
 
     meta_dict_2save = {key: value for key, value in full_meta_dict.items() if meta_dict_2save[key]}
 
