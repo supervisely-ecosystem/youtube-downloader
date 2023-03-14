@@ -14,7 +14,7 @@ import supervisely as sly
 from src.ui._common_widgets import (
     done_text_download, done_text_trim,
     note_box_license_1, note_box_license_2, 
-    checkbox_notrim
+    checkbox_notrim, container_hidden_elements
 )
 
 # for convenient debug, has no effect in production
@@ -122,10 +122,13 @@ def upload():
     trimmed_video_thumbnail.set_video(video_info)
     trimmed_video_thumbnail.show()
 
-    note_box_license_1.hide()
-    note_box_license_2.hide()
-    done_text_download.hide()
+    # note_box_license_1.hide()
+    # note_box_license_2.hide()
+    container_hidden_elements.hide()
+    # done_text_download.hide()
     done_text_trim.hide()
+
+    
 
 
     # default_status()

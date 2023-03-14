@@ -7,36 +7,30 @@ from supervisely.app.widgets import (
 )
 
 from src.ui._common_widgets import (
-    done_text_download, 
-    input_min_hours, input_min_minutes, input_min_seconds, 
-    input_max_hours, input_max_minutes, input_max_seconds,
-    note_box_license_1, note_box_license_2, video_player
+    input_yt_API_KEY, container_hidden_elements,
+    done_text_download, progress_bar,
+    note_box_license_1, note_box_license_2, video_player, 
+    slider, field_slider
 )
 
 from src.ui.trim import card_2
 from src.ui.upload import card_3
 
 from src.utils import (
-    get_youtube_id, get_meta, check_connection
+    get_youtube_id, get_meta
 )
 from pytube import YouTube, request
 
-input_yt_link = Input(placeholder="Please input a link to your video in format 'https://www.youtube.com/...'")
-
-input_yt_API_KEY = Input(
-    placeholder="Please input YouTube v3 API KEY", 
-    type='password'
+input_yt_link = Input(
+    placeholder="Please input a link to your video in format 'https://www.youtube.com/...'"
 )
-
-text_source_info = Text()
-text_source_info.status = 'info'
-text_connection_status = Text()
 
 
 field_available_licenses = Field(
     content=Empty(), title="",
     description="Available licenses: 1) YouTube license, 2) Creative Commons"
 )
+
 
 checkbox_title = Checkbox(content="Title")
 checkbox_description = Checkbox(content="Description")
@@ -67,50 +61,15 @@ container_buttons = Container(
         button_download, button_stop_download, Empty()
     ],
     direction="horizontal",
-    fractions=[1,1,4],
+    fractions=[1,.8,5],
 )
 
-progress_bar = Progress(show_percents=True)
-
-
-container_hidden_elements = Container(
-    widgets=[
-        progress_bar,
-        note_box_license_1, note_box_license_2,
-        done_text_download,
-    ],
-    direction="vertical",
-    # gap=0
-)
-
-
-if g.YT_API_KEY is None:
-    text_source_info.text = 'YouTube API key should be loaded manually'
-    input_yt_API_KEY.show()
-    container_input = Container(
-        widgets=[
-            input_yt_link,
-            input_yt_API_KEY
-        ],
-        direction="horizontal",
-        fractions=[3,1],    
-    )
-else:
-    text_source_info.text = 'YouTube API key is loaded from the team files.'
-    input_yt_API_KEY.hide()
-    container_input = Container(
-        widgets=[input_yt_link]
-    )
-
-text_connection_status.hide()
 
 card_1 = Card(
     title="Pull video from Youtube",
     content=Container(widgets=[ 
-        container_input,
+        input_yt_link,
         field_available_licenses,
-        text_source_info,
-        text_connection_status,
         field_meta,
         container_buttons,
         container_hidden_elements,
@@ -119,12 +78,9 @@ card_1 = Card(
 
 
 # card 1 states
-# note_box_license_1.hide()
-# note_box_license_2.hide()
 # progress_bar.hide()
 button_stop_download.hide()
 # done_text_download.hide()
-
 container_hidden_elements.hide()
 
 card_2.lock(message='Please download video first')
@@ -143,17 +99,15 @@ def download_video():
 
     if g.YT_API_KEY is None:
         g.YT_API_KEY = input_yt_API_KEY.get_value()
-    # checking connection
-    response = check_connection()
-    text_connection_status.status = response[0]
-    text_connection_status.text = response[1]
-    text_connection_status.show()
+
 
     global is_stopped
     is_stopped = False
 
     progress_bar.hide()
     done_text_download.hide()
+    note_box_license_1.hide()
+    note_box_license_2.hide()
     container_hidden_elements.show()
 
     link = input_yt_link.get_value()
@@ -166,20 +120,25 @@ def download_video():
         'license_type' : True,
         'is_licensed_content' : True,
         'duration' : False,
+        'duration_sec' : False,
         'author' : checkbox_author.is_checked(),
         'description' : checkbox_description.is_checked(),
         'title' : checkbox_title.is_checked(),
     }
 
     full_meta_dict = get_meta(yt_video_id, note_box_license_1, note_box_license_2)
+
     meta_dict_2save = {key: value for key, value in full_meta_dict.items() if meta_dict_2save[key]}
 
     meta_dict_2save['youtube_link'] = input_yt_link.get_value()
     meta_dict_2save['youtube_id'] = yt_video_id
 
-    # g.YT_VIDEO_LINK = input_yt_link.get_value()
-    # video_player._url = input_yt_link.get_value()
     g.META_DICT = json.dumps(meta_dict_2save)
+
+    if not note_box_license_1.description == None:
+        note_box_license_1.show()
+    if not note_box_license_2.description == None:
+        note_box_license_2.show()
 
     filename = os.path.join(os.getcwd(), f"src/videos/{yt_video_id}.mp4")
 
@@ -190,11 +149,9 @@ def download_video():
         # card_2.unlock()
     else:
         print('Getting Video...')   
-        
-        if not note_box_license_1.description == None:
-            note_box_license_1.show()
-        if not note_box_license_2.description == None:
-            note_box_license_2.show()
+
+        if not os.path.exists('src/videos/'):
+            os.makedirs('src/videos/')
         
         progress_bar.show()
         button_stop_download.show()
@@ -247,23 +204,20 @@ def download_video():
         print('Video downloaded to directory:', os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4'))
 
     video_player.set_video(
-        # os.path.join(os.getcwd(), f'src/videos/{yt_video_id}.mp4')
         f'static/{yt_video_id}.mp4'
     )
 
-    match = re.match('PT(\d+H)?(\d+M)?(\d+S)?', full_meta_dict['duration']).groups()
-    
-    input_max_hours.max = int(match[0][:-1]) if match[0] else 0
-    input_max_hours.value = int(match[0][:-1]) if match[0] else 0
-    
-    input_max_minutes.max = int(match[1][:-1]) if match[1] else 0
-    input_max_minutes.value = int(match[1][:-1]) if match[1] else 0
-    
-    input_max_seconds.max = int(match[2][:-1]) if match[2] else 0
-    input_max_seconds.value = int(match[2][:-1]) if match[2] else 0
+    slider.set_min(0)
+    # slider.set_max(full_meta_dict['duration_sec'])
+    slider.set_value([0, int(full_meta_dict['duration_sec']/10 )] )
+    slider.update_data()
+    slider.set_max(full_meta_dict['duration_sec'])
 
-    
+    field_slider._description = f"Video duration: {full_meta_dict['duration_sec']} seconds"
+    field_slider.update_data()
+
     card_2.unlock()
+    card_3.unlock()
 
 
 @button_stop_download.click

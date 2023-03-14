@@ -8,5 +8,6 @@ __pycache__/
 result/
 src/widgets.py
 *.mp4
+src/videos
 src/main copy.py
 src/debug/app_debug_data
