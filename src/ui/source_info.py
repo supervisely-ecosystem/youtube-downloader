@@ -1,7 +1,6 @@
 
 from supervisely.app.widgets import (
-    Button, Input, Checkbox, Container, Card,
-    Empty,  Text, Progress, Field
+    Input, Container, Card, Text
 )
 
 input_yt_API_KEY = Input(
@@ -9,12 +8,9 @@ input_yt_API_KEY = Input(
     type='password'
 )
 
-# from src.ui._common_widgets import input_yt_API_KEY
-
 import src.globals as g
 
 from src.utils import check_connection
-
 
 
 text_source_info = Text()

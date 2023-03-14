@@ -2,8 +2,8 @@ import os, json, re
 import src.globals as g
 
 from supervisely.app.widgets import (
-    Button, Input, Checkbox, Container, Card,
-    Empty,  Text, Progress, Field
+    Button, Input, Checkbox, Container, 
+    Card, Empty, Field
 )
 
 from src.ui._common_widgets import (

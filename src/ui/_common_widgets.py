@@ -1,12 +1,7 @@
 from supervisely.app.widgets import (
     Checkbox, Text, NotificationBox, InputNumber, VideoPlayer,
-    Slider, Container, Empty, Progress, Field, Input
+    Slider, Container, Progress, Field
 )
-
-# input_yt_API_KEY = Input(
-#     placeholder="Please input YouTube v3 API KEY", 
-#     # type='password'
-# )
 
 done_text_download = Text()
 done_text_trim = Text('Video was succesfully trimmed.')

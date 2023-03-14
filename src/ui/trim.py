@@ -14,8 +14,6 @@ from src.ui._common_widgets import (
     video_player, slider, field_slider
 )
 
-    
-
 
 button_trim = Button(text="Trim selected segment")
 

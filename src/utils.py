@@ -1,7 +1,6 @@
 import os, re
 import requests
 
-# import supervisely as sly
 import src.globals as g
 
 from googleapiclient.discovery import build

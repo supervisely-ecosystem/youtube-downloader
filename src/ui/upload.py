@@ -8,20 +8,12 @@ from supervisely.app.widgets import (
 )
 
 import os, json
-# from dotenv import load_dotenv
 import supervisely as sly
 
 from src.ui._common_widgets import (
     done_text_download, done_text_trim,
-    note_box_license_1, note_box_license_2, 
     checkbox_notrim, container_hidden_elements
 )
-
-# for convenient debug, has no effect in production
-# load_dotenv("local.env")
-# load_dotenv(os.path.expanduser("~/supervisely.env"))
-
-# g.api = sly.g.api()
 
 button_api_upload = Button(text="Upload to Supervisely")
 
@@ -67,11 +59,6 @@ def upload():
 
     workspace_id = sly.env.workspace_id()
 
-    # if destination.get_project_name() == '':
-    #     raise RuntimeError('Please enter project name')
-    # if destination.get_dataset_name() == '':
-    #     raise RuntimeError('Please enter dataset name')
-
     project_id = destination.get_selected_project_id()
     if project_id is None:
         project = g.api.project.create(
@@ -90,8 +77,6 @@ def upload():
             change_name_if_conflict=True
         )
         dataset_id = dataset.id
-
-    # yt_video_id = 
 
     if checkbox_notrim.is_checked():
         video_name = f"{g.YT_VIDEO_ID}.mp4"
@@ -112,7 +97,6 @@ def upload():
         dataset_id,
         name=video_name,
         path=video_path,
-        # meta=meta_dict 
     )
 
     # Add meta
@@ -122,15 +106,8 @@ def upload():
     trimmed_video_thumbnail.set_video(video_info)
     trimmed_video_thumbnail.show()
 
-    # note_box_license_1.hide()
-    # note_box_license_2.hide()
+
     container_hidden_elements.hide()
-    # done_text_download.hide()
     done_text_trim.hide()
-
-    
-
-
-    # default_status()
 
     print(f'Video "{video.name}" uploaded to Supervisely with ID:{video.id}')
