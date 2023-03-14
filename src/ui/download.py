@@ -7,12 +7,13 @@ from supervisely.app.widgets import (
 )
 
 from src.ui._common_widgets import (
-    input_yt_API_KEY, container_hidden_elements,
+    container_hidden_elements,
     done_text_download, progress_bar,
     note_box_license_1, note_box_license_2, video_player, 
     slider, field_slider
 )
 
+from src.ui.source_info import input_yt_API_KEY
 from src.ui.trim import card_2
 from src.ui.upload import card_3
 
@@ -93,8 +94,7 @@ def download_video():
     # check statuses
     if input_yt_link.get_value()=="":
         raise RuntimeError('Please input YouTube link.')
-    if input_yt_API_KEY.get_value()=="" \
-        and g.YT_API_KEY==None:
+    if input_yt_API_KEY.get_value()=="" and g.YT_API_KEY==None:
         raise RuntimeError('Please input your API key.')
 
     if g.YT_API_KEY is None:

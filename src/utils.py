@@ -15,10 +15,10 @@ def check_connection(url, name):
     
     if response.status_code == 200:
         print("Connection successful!")
-        return ['success' , f"Connection to {name} is established."]
+        return ['success' , f"Connection to {name} successful!"]
     else:
         print(f"Connection failed with status code: {response.status_code}")
-        return ['error', f"Failed to establish connection to {name}."]
+        return ['error', f"Failed to establish connection to {name}. (Status code: {response.status_code})"]
 
 
 def get_youtube_id(link):

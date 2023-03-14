@@ -27,7 +27,7 @@ else:
         os.path.join(storage_dir,os.path.basename(sly_file))
     )
 
-    # sly_file = None # for debug
+    # sly_file = None # for debug of manual input of yt api key
 
     if sly_file == None or sly_file == "":
         YT_API_KEY = None

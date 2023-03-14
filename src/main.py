@@ -3,7 +3,7 @@ import os
 
 from supervisely.app.widgets import Container
 
-from src.ui.check_source import card_0
+from src.ui.source_info import card_0
 from src.ui.download import card_1
 from src.ui.trim import card_2
 from src.ui.upload import card_3
