@@ -17,12 +17,10 @@ from src.ui._common_widgets import (
 
 button_api_upload = Button(text="Upload to Supervisely")
 
-
 destination = DestinationProject(
     workspace_id= sly.env.workspace_id(), 
     project_type="videos", 
 )
-
 
 container_destination = Container(
     widgets=[

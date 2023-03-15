@@ -2,7 +2,6 @@ import os, re
 import requests
 
 import src.globals as g
-from src.ui._common_widgets import text_check_input_ytapi
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -23,10 +22,8 @@ def check_connection(url, name):
 
 def get_youtube_id(link):
     try:
-        # Extract the video ID from the link using regular expressions
         video_id = re.search(r'(?<=v=)[^&#]+', link).group(0)
     except AttributeError:
-        # If the regular expression doesn't match, raise an exception with a custom error message
         raise ValueError("Invalid YouTube link.")
     
     print(f'Youtube ID is {video_id}')
@@ -40,7 +37,7 @@ def duration_to_seconds(duration):
     seconds = int(match[2][:-1]) if match[2] else 0
     return hours * 3600 + minutes * 60 + seconds
 
-def input_duration_to_seconds(hours, minutes, seconds):
+def duration_to_seconds_from_hms(hours, minutes, seconds):
     return hours * 3600 + minutes * 60 + seconds
 
 def get_meta(video_id, note_box_license_1, note_box_license_2):

@@ -1,5 +1,5 @@
 from supervisely.app.widgets import (
-    Checkbox, Text, NotificationBox, InputNumber, VideoPlayer,
+    Checkbox, Text, NotificationBox, VideoPlayer,
     Slider, Container, Progress, Field, Input
 )
 
@@ -34,25 +34,13 @@ container_hidden_elements = Container(
         done_text_download,
     ],
     direction="vertical",
-    # gap=0
 )
-
-input_min_hours = InputNumber(value=0, min=0)
-input_min_minutes = InputNumber(value=0, min=0)
-input_min_seconds = InputNumber(value=0, min=0)
-
-input_max_hours = InputNumber(value=0, min=0)
-input_max_minutes = InputNumber(value=0, min=0)
-input_max_seconds = InputNumber(value=0, min=0)
-
-
 
 checkbox_notrim = Checkbox('Do not trim the video', checked=True)
 
 video_player = VideoPlayer()
 
-slider = Slider(value=[0, 10], range=True)
-
+slider = Slider(value=[0, 20], range=True)
 
 field_slider = Field(
     content=slider, title="",

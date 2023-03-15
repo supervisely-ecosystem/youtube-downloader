@@ -1,6 +1,5 @@
 import requests
 
-
 from supervisely.app.widgets import (
     Input, Container, Card, Text, Button
 )
