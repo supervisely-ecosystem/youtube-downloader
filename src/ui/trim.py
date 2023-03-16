@@ -11,7 +11,7 @@ from src.utils import make_trim
 
 from src.ui._common_widgets import (
     checkbox_notrim, done_text_download, done_text_trim, 
-    video_player, slider, field_slider
+    video_player, slider, field_slider, trimming_range_float
 )
 
 
@@ -49,6 +49,8 @@ card_2 = Card(
     ]),
 )
 
+
+
 # card 2
 container_hidden_elements.hide()
 video_player.hide()
@@ -63,14 +65,15 @@ def set_start():
     curr_range = slider.get_value()
     if video_player.get_current_timestamp() <= curr_range[1]:
         slider.set_value([
-            video_player.get_current_timestamp(),
+            int(video_player.get_current_timestamp()),
             curr_range[1]
         ])
     else:
         slider.set_value([
-            video_player.get_current_timestamp(),
-            video_player.get_current_timestamp(),
+            int(video_player.get_current_timestamp()),
+            int(video_player.get_current_timestamp()),
         ])
+    trimming_range_float['start'] = video_player.get_current_timestamp()
 
 
 @button_end.click
@@ -79,13 +82,14 @@ def set_end():
     if video_player.get_current_timestamp() >= curr_range[0]:
         slider.set_value([
             curr_range[0],
-            video_player.get_current_timestamp(),
+            int(video_player.get_current_timestamp()),
         ])
     else:
         slider.set_value([
-            video_player.get_current_timestamp(),
-            video_player.get_current_timestamp(),
+            int(video_player.get_current_timestamp()),
+            int(video_player.get_current_timestamp()),
         ])
+    trimming_range_float['end'] = video_player.get_current_timestamp()
 
 @checkbox_notrim.value_changed
 def notrim(value):
@@ -113,8 +117,6 @@ def trim_video():
 
     done_text_trim.hide()
 
-    start_time, end_time = slider.get_value()
-
     yt_video_id = g.YT_VIDEO_ID
 
     input_path = os.path.join(
@@ -127,8 +129,8 @@ def trim_video():
     make_trim(
         input_path=input_path,
         output_path=output_path,
-        start_time=start_time,
-        end_time=end_time
+        start_time=trimming_range_float['start'],
+        end_time=trimming_range_float['end']
     )
 
     done_text_trim.status = 'success'

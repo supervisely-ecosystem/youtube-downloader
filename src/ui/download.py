@@ -10,7 +10,7 @@ from src.ui._common_widgets import (
     container_hidden_elements, text_check_input_ytlink,
     done_text_download, progress_bar,
     note_box_license_1, note_box_license_2, video_player, 
-    slider, field_slider
+    slider, field_slider, trimming_range_float
 )
 
 from src.ui.trim import card_2
@@ -210,7 +210,9 @@ def download_video():
 
     slider.set_min(0)
     slider.set_max(full_meta_dict['duration_sec'])
-    slider.set_value([0, full_meta_dict['duration_sec']/5 ] )
+    slider.set_value([0, int(full_meta_dict['duration_sec']/5) ] )
+
+    trimming_range_float['end'] = [int(full_meta_dict['duration_sec']/5)]
  
 
     field_slider._description = f"Video duration: {full_meta_dict['duration_sec']} seconds"

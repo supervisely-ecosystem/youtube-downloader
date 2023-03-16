@@ -42,6 +42,8 @@ video_player = VideoPlayer()
 
 slider = Slider(value=[0, 20], range=True)
 
+trimming_range_float = {'start':0, 'end':20}
+
 field_slider = Field(
     content=slider, title="",
 )
