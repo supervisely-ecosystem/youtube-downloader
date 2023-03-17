@@ -49,7 +49,6 @@ container_meta = Container(
     fractions=[.5,1,1,8],
 )
 
-
 field_meta = Field(content=container_meta, title="Add meta")
 
 
@@ -66,7 +65,7 @@ container_buttons = Container(
 
 
 card_1 = Card(
-    title="Pull video from Youtube",
+    title="Video Settings",
     content=Container(widgets=[ 
         input_yt_link,
         text_check_input_ytlink,

@@ -71,7 +71,7 @@ if g.YT_API_KEY is None:
 
 else:
     card_0 = Card(
-        title="Source info",
+        title="YouTube API Token",
         content=Container(widgets=[ 
             text_source_info,
             text_connection_status,            

@@ -15,7 +15,7 @@ from src.ui._common_widgets import (
     checkbox_notrim, container_hidden_elements
 )
 
-button_api_upload = Button(text="Upload to Supervisely")
+button_api_upload = Button(text="Start Upload")
 
 destination = DestinationProject(
     workspace_id= sly.env.workspace_id(), 
@@ -34,7 +34,7 @@ container_destination = Container(
 trimmed_video_thumbnail = VideoThumbnail()
 
 card_3 = Card(
-    title="Push to supervisely",
+    title="Output Settings",
     content=Container(widgets=[
         container_destination,
         button_api_upload, 

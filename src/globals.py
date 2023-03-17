@@ -21,10 +21,10 @@ if sly_file is None:
     YT_API_KEY = None
 else:
     storage_dir = sly.app.get_data_dir()
-
+    file_path = os.path.join(storage_dir,os.path.basename(sly_file))
+    
     api.file.download(
-        TEAM_ID, sly_file, 
-        os.path.join(storage_dir,os.path.basename(sly_file))
+        TEAM_ID, sly_file, file_path
     )
 
     # sly_file = None # for debug of manual input of yt api key
@@ -32,11 +32,14 @@ else:
     if sly_file == None or sly_file == "":
         YT_API_KEY = None
     else:
-        with open(
-            os.path.join(storage_dir,os.path.basename(sly_file)), "r"
-        ) as f:
-            dct = json.load(f)
-            YT_API_KEY = dct['YT_API_KEY']
+        file_ext = os.path.splitext(sly_file)[1].lower()
+
+        if file_ext == '.env':
+            load_dotenv(file_path)
+            YT_API_KEY = os.getenv("YT_API_KEY")
+        else:
+            raise ValueError(f'Unsupported file format: {file_ext}')
+
 
 # YT_VIDEO_LINK = None
 YT_VIDEO_ID = None

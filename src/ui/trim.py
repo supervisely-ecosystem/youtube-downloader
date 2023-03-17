@@ -39,7 +39,7 @@ container_hidden_elements = Container(
 )
 
 card_2 = Card(
-    title="Video settings",
+    title="Trim settings",
     content=Container(widgets=[
         checkbox_notrim, 
         container_hidden_elements,
