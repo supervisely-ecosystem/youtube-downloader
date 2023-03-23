@@ -15,6 +15,7 @@
     "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
     "port": 8000,
     "icon": "https://user-images.githubusercontent.com/115161827/226860080-a91b9f16-2b34-4563-9dcf-95bb0acf4c00.jpg",
+    "icon_cover": true,
     "poster": "https://user-images.githubusercontent.com/115161827/226859998-b151fb10-9765-481d-a3d4-94819c9dea75.jpg",
     "context_menu": {
       "context_category": "Import",
