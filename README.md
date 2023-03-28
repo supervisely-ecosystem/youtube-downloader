@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://www.youtube.com/img/desktop/yt_1200.png"/>
+<img src="https://user-images.githubusercontent.com/115161827/226859998-b151fb10-9765-481d-a3d4-94819c9dea75.jpg"/>
 
 # Download and trim videos from YouTube
 
