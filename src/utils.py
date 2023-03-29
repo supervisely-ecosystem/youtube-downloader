@@ -2,13 +2,12 @@ import re
 from multiprocessing import Manager
 
 import requests
-
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from moviepy.video.io.VideoFileClip import VideoFileClip
+import yt_dlp
 
 import src.globals as g
-import yt_dlp
 
 
 class Downloader:
@@ -114,11 +113,7 @@ def get_meta(video_id, note_box_license_1, note_box_license_2):
     return video_info_meta
 
 
-def make_trim(input_path: str, output_path: str, start_time: int, end_time: int):
-    clip = VideoFileClip(input_path)
-
-    trimmed_clip = clip.subclip(start_time, end_time)
-
-    trimmed_clip.write_videofile(output_path, codec="libx264", fps=clip.fps)
-
-    clip.close()
+def make_trim(input_path, output_path, start_time, end_time):
+    with VideoFileClip(input_path) as video:
+        trimmed_clip = video.subclip(start_time, end_time)
+        trimmed_clip.write_videofile(output_path)

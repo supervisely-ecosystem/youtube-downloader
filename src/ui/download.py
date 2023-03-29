@@ -1,12 +1,20 @@
-import os, json, re, sys
-import src.globals as g
-import threading, time
-from multiprocessing import Process, Manager
+import os
+import json
+import time
 import traceback
+from multiprocessing import Process
 
+from supervisely.app.widgets import (
+    Button,
+    Input,
+    Checkbox,
+    Container,
+    Card,
+    Empty,
+    Field,
+)
 
-from supervisely.app.widgets import Button, Input, Checkbox, Container, Card, Empty, Field
-
+import src.globals as g
 from src.ui._common_widgets import (
     container_hidden_elements,
     text_check_input_ytlink,
@@ -19,12 +27,10 @@ from src.ui._common_widgets import (
     field_slider,
     trimming_range_float,
 )
-
 from src.ui.trim import card_2
 from src.ui.upload import card_3
-
 from src.utils import get_youtube_id, get_meta, Downloader
-from pytube import YouTube, request
+
 
 input_yt_link = Input(
     placeholder="Please input a link to your video in format 'https://www.youtube.com/...'"

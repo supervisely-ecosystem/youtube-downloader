@@ -3,10 +3,8 @@ import os
 import src.globals as g
 
 from supervisely.app.widgets import Button, Container, Card, Empty
-
 from src.ui.upload import card_3
 from src.utils import make_trim
-
 from src.ui._common_widgets import (
     checkbox_notrim,
     done_text_download,
@@ -100,14 +98,12 @@ def notrim(value):
     if value == True:
         container_hidden_elements.hide()
         button_trim.disable()
-        slider.disable()
         video_player.hide()
         container_set_buttons.hide()
         card_3.unlock()
     else:
         container_hidden_elements.show()
         button_trim.enable()
-        slider.enable()
         video_player.show()
         container_set_buttons.show()
         card_3.lock("Please trim the video")
