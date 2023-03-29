@@ -28,12 +28,13 @@ To use this app, you need to obtain a YouTube v3 API key. To do so, you must hav
 ### Using team files
 1. Create a .env file with the following content:<br>
 ```YT_API_KEY=<your_api_key>```<br>
-2. Upload the .env file to the team files.<br>
-3. Right-click on the .env file, select "Run app" and choose the "YouTube Downloader" app.<br>
-The app will be launched with the API key from the .env file and you won't need to enter it manually.<br>
+3. Launch the app. The context menu will appear.
+4. You can `Drag & Drop` your .env file or upload it to `Team files` and select it from there.
+5. Click `Run`. The app will be launched with the API key from the .env file and you won't need to enter it manually.<br>
 
 ### Entering the API key manually
-1. Launch the app.<br>
+1. Launch the app. The context menu will appear.<br>
+2. Select `Ecosystem`. Click `Run`.
 2. You will notice that all cards of the app are locked except the "YouTube API Token" card. Enter your API key in the field and press the `Check API key`.<br>
 3. If the API key is valid, the Video settings card will be unlocked and you can proceed with using the app. If the API key is invalid, you will see an error message and will need to re-enter the API key.<br>
 Now you can use the app. However, please note that in this case, you will need to enter the API key every time you launch the app.<br>
