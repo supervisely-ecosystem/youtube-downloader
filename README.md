@@ -23,9 +23,9 @@ This app allows you to download and trim YouTube videos directly to your video e
 For example, you enter a link for a videoclip of a popular song, such as [this one](https://www.youtube.com/watch?v=dQw4w9WgXcQ), choose the available metadata, and click on "Download" (Don't forget to input your YouTube v3 API key, either manually or by importing a teamfile). After that, you can specify the trimming segment of the video (or leave it untouched) and push the video to the selected project and dataset (or create new ones). Once done, the video clip will be uploaded to the Supervisely dataset with all the necessary metadata. For more details, please refer to the [How To Run](#How-To-Run) section.<br>
 
 ## Preparation
-To use this app, you need to obtain a YouTube v3 API key. To do so, you must have a Google account and follow the instructions provided by [YouTube](https://developers.google.com/youtube/v3/getting-started). There are two options for using your API key: you can store it in a .env file within the team files, or you can enter it directly in the app's GUI. We recommend using team files as it is more convenient and secure, but you may choose the option that best suits your needs.<br>
+To use this app, you need to obtain a YouTube v3 API key. To do so, you must have a Google account and follow the instructions provided by [YouTube](https://developers.google.com/youtube/v3/getting-started). There are two options for using your API key: you can store it in a .env file within the Team files, or you can enter it directly in the app's GUI. We recommend using Team files as it is more convenient and secure, but you may choose the option that best suits your needs.<br>
 
-### Using team files
+### Using Team files
 1. Create a .env file with the following content:<br>
 ```YT_API_KEY=<your_api_key>```<br>
 3. Launch the app. The context menu will appear.
