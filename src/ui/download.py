@@ -180,7 +180,7 @@ def download_video():
 
                     prev = d.download_info["percent"]
 
-                    time.sleep(5)
+                    time.sleep(1)
 
                     increment = d.download_info["percent"] - prev
                     pbar.update(increment)
@@ -220,9 +220,12 @@ def download_video():
     slider.set_max(full_meta_dict["duration_sec"])
     slider.set_value([0, int(full_meta_dict["duration_sec"] / 5)])
 
-    trimming_range_float["end"] = [int(full_meta_dict["duration_sec"] / 5)]
+    trimming_range_float["end"] = full_meta_dict["duration_sec"] / 5
+    trimming_range_float["full"] = full_meta_dict["duration_sec"]
 
-    field_slider._description = f"Video duration: {full_meta_dict['duration_sec']} seconds"
+    field_slider._description = f"""
+    Full video: {int(trimming_range_float["full"])} seconds. Segment: {int(trimming_range_float["full"] / 5)} seconds
+    """
     field_slider.update_data()
 
     card_2.unlock()

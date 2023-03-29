@@ -1,18 +1,22 @@
 from supervisely.app.widgets import (
-    Checkbox, Text, NotificationBox, VideoPlayer,
-    Slider, Container, Progress, Field, Input
+    Checkbox,
+    Text,
+    NotificationBox,
+    VideoPlayer,
+    Slider,
+    Container,
+    Progress,
+    Field,
+    Input,
 )
 
-input_yt_API_KEY = Input(
-    placeholder="Please input YouTube v3 API KEY", 
-    type='password'
-)
+input_yt_API_KEY = Input(placeholder="Please input YouTube v3 API KEY", type="password")
 
 text_check_input_ytlink = Text()
 text_check_input_ytapi = Text()
 
 done_text_download = Text()
-done_text_trim = Text('Video was succesfully trimmed.')
+done_text_trim = Text("Video was succesfully trimmed.")
 
 progress_bar = Progress(show_percents=True)
 
@@ -30,20 +34,22 @@ container_hidden_elements = Container(
     widgets=[
         # text_check_input_ytlink,
         progress_bar,
-        note_box_license_1, note_box_license_2,
+        note_box_license_1,
+        note_box_license_2,
         done_text_download,
     ],
     direction="vertical",
 )
 
-checkbox_notrim = Checkbox('Do not trim the video', checked=True)
+checkbox_notrim = Checkbox("Do not trim the video", checked=True)
 
 video_player = VideoPlayer()
 
 slider = Slider(value=[0, 20], range=True)
 
-trimming_range_float = {'start':0, 'end':20}
+trimming_range_float = {"start": 0, "end": 20, "full": 100}
 
 field_slider = Field(
-    content=slider, title="",
+    content=slider,
+    title="",
 )

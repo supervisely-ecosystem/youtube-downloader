@@ -72,6 +72,13 @@ def set_start():
         )
     trimming_range_float["start"] = video_player.get_current_timestamp()
 
+    clip_duration = trimming_range_float["end"] - trimming_range_float["start"]
+
+    field_slider._description = f"""
+    Full video: {int(trimming_range_float['full'])} seconds. Clip: {int(clip_duration)} seconds
+    """
+    field_slider.update_data()
+
 
 @button_end.click
 def set_end():
@@ -91,6 +98,13 @@ def set_end():
             ]
         )
     trimming_range_float["end"] = video_player.get_current_timestamp()
+
+    clip_duration = trimming_range_float["end"] - trimming_range_float["start"]
+
+    field_slider._description = f"""
+    Full video: {int(trimming_range_float['full'])} seconds. Segment: {int(clip_duration)} seconds
+    """
+    field_slider.update_data()
 
 
 @checkbox_notrim.value_changed
