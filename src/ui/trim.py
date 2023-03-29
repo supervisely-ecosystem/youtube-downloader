@@ -75,7 +75,7 @@ def set_start():
     clip_duration = trimming_range_float["end"] - trimming_range_float["start"]
 
     field_slider._description = f"""
-    Full video: {int(trimming_range_float['full'])} seconds. Clip: {int(clip_duration)} seconds
+    Full video: {int(trimming_range_float['full'])} seconds. Segment: {int(clip_duration)} seconds
     """
     field_slider.update_data()
 
