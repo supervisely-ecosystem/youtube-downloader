@@ -6,7 +6,8 @@
 <p align="center">
   <a href="#Overview">Overview</a> •
   <a href="#Preparation">Preparation</a> •
-  <a href="#How-To-Run">How To Run</a>
+  <a href="#How-To-Run">How To Run</a> •
+  <a href="#Screenshot">Screenshot</a>
 </p>
 
 [![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervise.ly/apps/supervisely-ecosystem/dev-smart-tool-batched)
@@ -49,3 +50,8 @@ So, here are the steps to download and trim video from YouTube:<br>
 **Step 4:** Indicate if you need to trim the video in the `Trim Settings` section. If so, specify the trimming time interval by selecting the timestamp in the video player and clicking the corresponding `Set start` or `Set end` buttons. Click the `Trim` button. <br><br>
 **Step 5:** In the `Output Settings`, you can specify the project and dataset to which you would like to add the video. If you do not specify a project or dataset, one will be created automatically using the search query and the current date to generate names. Alternatively, you can specify custom names for the project or dataset manually. <br><br>
 **Step 6:** After completing all of the previous steps, you can click the `Start Upload` button to begin uploading the video to the dataset. Once the upload is complete, the app will display a thumbnail of the video. You can click on the link to open the project in the video editor. <br><br>
+
+## Screenshot
+
+<img src="https://user-images.githubusercontent.com/119248312/229116804-eeb1741f-dd84-42a3-9fca-7a292cae5757.png"/>
+
