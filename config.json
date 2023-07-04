@@ -9,7 +9,7 @@
         "data transformation"
     ],
     "description": "Downloads and trim video from Youtube.",
-    "docker_image": "supervisely/base-py-sdk:latest",
+    "docker_image": "supervisely/youtube-downloader:1.0.0",
     "entrypoint": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
     "port": 8000,
     "icon": "https://user-images.githubusercontent.com/115161827/226860080-a91b9f16-2b34-4563-9dcf-95bb0acf4c00.jpg",
