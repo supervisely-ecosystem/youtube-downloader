@@ -1,4 +1,4 @@
-supervisely==6.72.42
+supervisely==6.72.56
 google-api-python-client==2.81.0
 moviepy==1.0.3
 yt-dlp==2023.3.4
