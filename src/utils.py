@@ -14,7 +14,7 @@ class Downloader:
     def __init__(self, url):
         self.url = url
         self.ydl_opts = {
-            "format": "bestvideo[ext=mp4]+bestaudio[ext=mp4]/mp4+best[height<=480]",
+            "format": "bestvideo[ext=mp4]+bestaudio[ext=mp4]/mp4+best[height<=240]",
             "outtmpl": "src/videos/%(id)s.%(ext)s",
             "progress_hooks": [self.progress_hook],
         }
