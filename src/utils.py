@@ -44,7 +44,7 @@ def check_connection(url, name):
 
     if response.status_code == 200:
         print("Connection successful!")
-        return ["success", f"Connection to {name} successful!"]
+        return ["success", f"Stable connection to {name}."]
     else:
         print(f"Connection failed with status code: {response.status_code}")
         return [
