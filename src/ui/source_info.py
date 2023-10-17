@@ -1,22 +1,27 @@
 import requests
 
 from supervisely.app.widgets import (
-    Input,
-    Container,
-    Card,
-    Text,
     Button,
+    Card,
+    Container,
+    Flexbox,
+    Icons,
+    Text,
 )
 
 import src.globals as g
 from src.utils import check_connection
 from src.ui.download import card_1
-from src.ui._common_widgets import text_check_input_ytapi, input_yt_API_KEY
+from src.ui._common_widgets import text_check_input_ytapi, text_check_input_ytapi_box, input_yt_API_KEY
 
 
-text_source_info = Text()
-text_source_info.status = "info"
 text_connection_status = Text()
+text_connection_icon = Icons(class_name="zmdi zmdi-n-1-square", color="#009aff", bg_color="#ffffff")
+text_connection_box = Flexbox(widgets=[text_connection_icon, text_connection_status])
+
+text_source_info = Text(status="info")
+text_source_icon = Icons(class_name="zmdi zmdi-n-2-square", color="#009aff", bg_color="#ffffff")
+text_source_box = Flexbox(widgets=[text_source_icon, text_source_info])
 
 if g.YT_API_KEY is None:
     text_source_info.text = "YouTube API key should be loaded manually"
@@ -31,7 +36,7 @@ text_connection_status.status = response[0]
 text_connection_status.text = response[1]
 
 
-text_check_input_ytapi.hide()
+text_check_input_ytapi_box.hide()
 
 button_check = Button(text="Check API key")
 
@@ -48,13 +53,13 @@ def validate_api_key(API_KEY):
         print("API key is valid.")
         text_check_input_ytapi.text = "API key is valid"
         text_check_input_ytapi.status = "success"
-        text_check_input_ytapi.show()
-        text_connection_status.show()
+        text_check_input_ytapi_box.show()
+        text_connection_box.show()
         return "success"
     else:
         text_check_input_ytapi.text = "Invalid or unauthorized API key"
         text_check_input_ytapi.status = "error"
-        text_check_input_ytapi.show()
+        text_check_input_ytapi_box.show()
         card_1.lock("Please check your YouTube API key first.")
         return "error"
 
@@ -64,11 +69,11 @@ if g.YT_API_KEY is None:
         title="Source info",
         content=Container(
             widgets=[
-                text_source_info,
-                text_connection_status,
+                text_connection_box,
+                text_source_box,
                 input_yt_API_KEY,
                 button_check,
-                text_check_input_ytapi,
+                text_check_input_ytapi_box,
             ]
         ),
     )
@@ -80,9 +85,9 @@ else:
         title="YouTube API Token",
         content=Container(
             widgets=[
-                text_source_info,
-                text_connection_status,
-                text_check_input_ytapi,
+                text_connection_box,
+                text_source_box,
+                text_check_input_ytapi_box,
             ]
         ),
     )
@@ -90,7 +95,7 @@ else:
     if g.YT_API_KEY == "":
         text_check_input_ytapi.text = "Input form is empty. Please input YouTube API key."
         text_check_input_ytapi.status = "error"
-        text_check_input_ytapi.show()
+        text_check_input_ytapi_box.show()
     else:
         validation = validate_api_key(g.YT_API_KEY)
 
@@ -111,7 +116,7 @@ def check_api():
     if input_yt_API_KEY.get_value() == "" and g.YT_API_KEY == None:
         text_check_input_ytapi.text = "Input form is empty. Please input YouTube API key."
         text_check_input_ytapi.status = "error"
-        text_check_input_ytapi.show()
+        text_check_input_ytapi_box.show()
     else:
         validation = validate_api_key(input_yt_API_KEY.get_value())
 

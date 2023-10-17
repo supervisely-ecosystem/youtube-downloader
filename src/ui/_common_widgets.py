@@ -1,19 +1,24 @@
 from supervisely.app.widgets import (
     Checkbox,
-    Text,
+    Container,
+    Field,
+    Flexbox,
+    Icons,
+    Input,
     NotificationBox,
+    Progress,
+    Text,
     VideoPlayer,
     Slider,
-    Container,
-    Progress,
-    Field,
-    Input,
 )
 
 input_yt_API_KEY = Input(placeholder="Please input YouTube v3 API KEY", type="password")
 
 text_check_input_ytlink = Text()
 text_check_input_ytapi = Text()
+text_check_input_ytapi_icon = Icons(class_name="zmdi zmdi-n-2-square", color="#009aff", bg_color="#ffffff")
+text_check_input_ytapi_box = Flexbox(widgets=[text_check_input_ytapi, text_check_input_ytapi_icon])
+
 
 done_text_download = Text()
 done_text_trim = Text("Video was succesfully trimmed.")
