@@ -106,11 +106,11 @@ def download_video():
         text_check_input_ytlink.status = "error"
         text_check_input_ytlink.show()
         return None
-    if not input_yt_link.get_value().startswith("https://www.youtube.com/"):
-        text_check_input_ytlink.text = "Invalid YouTube link. Please use desktop format of url starting with 'https://www.youtube.com/...'"
-        text_check_input_ytlink.status = "error"
-        text_check_input_ytlink.show()
-        return None
+    # if not input_yt_link.get_value().startswith("https://www.youtube.com/"):
+    #     text_check_input_ytlink.text = "Invalid YouTube link. Please use desktop format of url starting with 'https://www.youtube.com/...'"
+    #     text_check_input_ytlink.status = "error"
+    #     text_check_input_ytlink.show()
+    #     return None
     else:
         text_check_input_ytlink.hide()
 
