@@ -15,3 +15,4 @@ src/debug/app_debug_data
 script.py
 yt_api_key.env
 test.py
+supervisely
