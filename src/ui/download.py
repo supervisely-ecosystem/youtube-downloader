@@ -106,7 +106,7 @@ def download_video():
         text_check_input_ytlink.status = "error"
         text_check_input_ytlink.show()
         return None
-    if not link.startswith(g.LINK_PREFIX_LONG) or not link.startswith(g.LINK_PREFIX_SHORT):
+    if not link.startswith(g.LINK_PREFIX_LONG) and not link.startswith(g.LINK_PREFIX_SHORT):
         text_check_input_ytlink.text = "Invalid YouTube link. Make sure it starts with 'https://www.youtube.com/...' or 'https://youtu.be/...'"
         text_check_input_ytlink.status = "error"
         text_check_input_ytlink.show()
