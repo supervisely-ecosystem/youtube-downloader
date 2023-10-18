@@ -10,34 +10,33 @@ if sly.is_development():
 api: sly.Api = sly.Api.from_env()
 
 TEAM_ID = sly.env.team_id()
-# WORKSPACE_ID = sly.env.workspace_id()
-# PROJECT_ID = sly.env.project_id()
-# DATASET_ID = sly.env.dataset_id(raise_not_found=False)
 
+SLY_FILE = sly.env.file(raise_not_found=False)
 
-sly_file = sly.env.file(raise_not_found=False)
+YT_API_RUN_FROM_TF = False
+YT_API_NOT_FOUND = False
+YT_API_INVALID_FORMAT = False
 
-if sly_file is None:
-    YT_API_KEY = None
-else:
-    storage_dir = sly.app.get_data_dir()
-    file_path = os.path.join(storage_dir, os.path.basename(sly_file))
-
-    api.file.download(TEAM_ID, sly_file, file_path)
-
-    # sly_file = None  # for debug of manual input of yt api key
-
-    if sly_file == None or sly_file == "":
-        YT_API_KEY = None
+YT_API_KEY = None
+if SLY_FILE is not None and SLY_FILE != "":
+    YT_API_RUN_FROM_TF = True
+    if not api.file.exists(TEAM_ID, SLY_FILE):
+        sly.logger.warn(f"File {SLY_FILE} not found in team files")
+        YT_API_NOT_FOUND = True
     else:
-        file_ext = os.path.splitext(sly_file)[1].lower()
+        storage_dir = sly.app.get_data_dir()
+        file_path = os.path.join(storage_dir, os.path.basename(SLY_FILE))
+        api.file.download(TEAM_ID, SLY_FILE, file_path)
 
+        file_ext = os.path.splitext(SLY_FILE)[1].lower()
         if file_ext == ".env":
             load_dotenv(file_path)
             YT_API_KEY = os.getenv("YT_API_KEY")
         else:
-            raise ValueError(f"Unsupported file format: {file_ext}")
+            YT_API_INVALID_FORMAT = True
 
+LINK_PREFIX_LONG = "https://www.youtube.com/watch?v="
+LINK_PREFIX_SHORT = "https://youtu.be/"
 
 # YT_VIDEO_LINK = None
 YT_VIDEO_ID = None
