@@ -63,7 +63,7 @@ def upload():
     if project_id is None:
         project = g.api.project.create(
             workspace_id=workspace_id,
-            name=destination.get_project_name(),
+            name=destination.get_project_name() or g.DEFAULT_PROJECT_NAME,
             type=sly.ProjectType.VIDEOS,
             change_name_if_conflict=True,
         )
@@ -72,7 +72,9 @@ def upload():
     dataset_id = destination.get_selected_dataset_id()
     if dataset_id is None:
         dataset = g.api.dataset.create(
-            project_id=project_id, name=destination.get_dataset_name(), change_name_if_conflict=True
+            project_id=project_id,
+            name=destination.get_dataset_name() or g.DEFAULT_DATASET_NAME,
+            change_name_if_conflict=True,
         )
         dataset_id = dataset.id
 

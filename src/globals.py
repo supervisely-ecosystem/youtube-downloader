@@ -42,3 +42,6 @@ LINK_PREFIX_SHORT = "https://youtu.be/"
 YT_VIDEO_ID = None
 META_DICT = None
 LICENSES = ["youtube", "creativeCommon"]
+
+DEFAULT_PROJECT_NAME = "YouTube Videos"
+DEFAULT_DATASET_NAME = "ds0"
