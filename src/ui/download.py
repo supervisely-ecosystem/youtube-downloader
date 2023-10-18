@@ -33,7 +33,7 @@ from src.utils import get_youtube_id, get_meta, Downloader
 
 
 input_yt_link = Input(
-    placeholder="Please input a link to your video in format 'https://www.youtube.com/...'"
+    placeholder="Please input a link to your video in 'https://www.youtube.com/...' or 'https://youtu.be/...' format"
 )
 
 
@@ -99,15 +99,15 @@ card_3.lock(message="Please download video first")
 
 @button_download.click
 def download_video():
-
+    link = input_yt_link.get_value()
     # check statuses
-    if input_yt_link.get_value() == "":
+    if link == "":
         text_check_input_ytlink.text = "Input form is empty. Please input YouTube link."
         text_check_input_ytlink.status = "error"
         text_check_input_ytlink.show()
         return None
-    if not input_yt_link.get_value().startswith("https://www.youtube.com/"):
-        text_check_input_ytlink.text = "Invalid YouTube link. Please use desktop format of url starting with 'https://www.youtube.com/...'"
+    if not link.startswith(g.LINK_PREFIX_LONG) and not link.startswith(g.LINK_PREFIX_SHORT):
+        text_check_input_ytlink.text = "Invalid YouTube link. Make sure it starts with 'https://www.youtube.com/...' or 'https://youtu.be/...'"
         text_check_input_ytlink.status = "error"
         text_check_input_ytlink.show()
         return None
@@ -120,7 +120,6 @@ def download_video():
     note_box_license_2.hide()
     container_hidden_elements.show()
 
-    link = input_yt_link.get_value()
     yt_video_id = get_youtube_id(link)
     g.YT_VIDEO_ID = str(yt_video_id)
 
@@ -168,7 +167,7 @@ def download_video():
             global is_stopped
             is_stopped = False
 
-            url = f"https://www.youtube.com/watch?v={yt_video_id}"
+            url = f"{g.LINK_PREFIX_LONG}{yt_video_id}"
 
             d = Downloader(url)
             p = Process(target=d.run)
