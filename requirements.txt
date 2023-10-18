@@ -2,5 +2,5 @@ supervisely==6.72.154
 #==6.72.42
 google-api-python-client==2.81.0
 moviepy==1.0.3
-yt-dlp
+yt-dlp==2023.09.24
 #==2023.3.4
