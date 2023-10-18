@@ -43,7 +43,7 @@ Now you can use the app. However, please note that in this case, you will need t
 Note: in this section, we consider that you have already obtained the API key, and use it to run the app. If you haven't done it yet, see the [Preparation](#Preparation) section.<br>
 So, here are the steps to download and trim video from YouTube:<br>
 
-**Step 1:** Enter the copy-pasted YouTube link in the `"https://www.youtube.com/..."` format.<br><br>
+**Step 1:** Enter the copy-pasted YouTube link in the `"https://www.youtube.com/..."` or `"https://youtu.be/..."` format.<br><br>
 **Step 2:** In the `Video Settings ` section, examine the `Available licenses` and indicate the type of metadata you wish to add (Title, Description, Author) in the `Add meta` field. Please note that for YouTube videos, there are only two types of available licenses: YouTube and Creative Commons. <br><br>
 **Step 3:** After completing the previous steps, click the `Download` button and wait for the process to complete. You can stop the process at any time. <br><br>
 **Step 4:** Indicate if you need to trim the video in the `Trim Settings` section. If so, specify the trimming time interval by selecting the timestamp in the video player and clicking the corresponding `Set start` or `Set end` buttons. Click the `Trim` button. <br><br>
