@@ -54,10 +54,18 @@ def check_connection(url, name):
 
 
 def get_youtube_id(link):
-    try:
-        video_id = re.search(r"(?<=v=)[^&#]+", link).group(0)
-    except AttributeError:
-        raise ValueError("Invalid YouTube link.")
+    if link.startswith(g.LINK_PREFIX_LONG):
+        try:
+            video_id = re.search(r"(?<=v=)[^&#]+", link).group(0)
+        except AttributeError:
+            raise ValueError("Invalid YouTube link.")
+    elif link.startswith(g.LINK_PREFIX_SHORT):
+        if "?" in link:
+            link = link.split("?")[0]
+        try:
+            video_id = re.search(r"(?<=be/)[^&#]+", link).group(0)
+        except AttributeError:
+            raise ValueError("Invalid YouTube link.")
 
     print(f"Youtube ID is {video_id}")
     return video_id
@@ -117,3 +125,15 @@ def make_trim(input_path, output_path, start_time, end_time):
     with VideoFileClip(input_path) as video:
         trimmed_clip = video.subclip(start_time, end_time)
         trimmed_clip.write_videofile(output_path)
+
+def get_text_icon(num):
+    return f"<i class='zmdi zmdi-n-{num}-square'></i>    "
+
+
+def validate_api_key(API_KEY):
+    # Build the request URL with your API key and a sample API endpoint
+    url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id=INVALID_VIDEO_ID&key={API_KEY}"
+
+    # Make the request
+    response = requests.get(url)
+    return response.status_code == 200
